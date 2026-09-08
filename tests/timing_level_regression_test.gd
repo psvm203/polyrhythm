@@ -44,11 +44,7 @@ func _test_stage(stage_number: int, path: String) -> void:
 		_expect_approx(entry["judgment_sec"], legacy_cursor, "stage %d note %d center matches visible contact" % [stage_number, index + 1])
 		_expect(float(entry["miss_after_sec"]) > float(entry["perfect_end_sec"]), "stage %d note %d windows remain ordered" % [stage_number, index + 1])
 	_expect_approx(timeline.duration_sec(), legacy_cursor, "stage %d timeline ends on its last audio onset" % stage_number)
-	if stage_number == 3:
-		_expect(transformed.size() >= original.size(), "samurai replacements never drop notes")
-		_expect(transformed.count(3) > original.count(3), "samurai split produces triangle beats")
-	else:
-		_expect(transformed.size() == original.size(), "stage %d event keeps note count" % stage_number)
+	_expect(transformed.size() == original.size(), "stage %d event keeps note count" % stage_number)
 
 
 func _test_editor_round_trip() -> void:

@@ -30,7 +30,8 @@ signal level_finished(stats: Dictionary, completed: bool, rank: String)
 @export var side_length: float = 100.0
 @export var base_midpoint := Vector2(500, 600)
 @export var outline_width: float = 2.0
-@export var faded_alpha: float = 0.18
+@export_range(1, 20, 1) var fully_visible_past_polygons: int = 10
+@export_range(2, 30, 1) var past_polygon_trail_length: int = 14
 @export_range(0.0, 1.0) var starter_triangle_alpha: float = 0.32
 @export_range(0.0, 1.0) var current_fill_alpha: float = 0.86
 @export_range(0.0, 1.0) var inner_highlight_alpha: float = 0.24
@@ -397,12 +398,14 @@ func _compute_scheduled_judgment_times() -> PackedFloat32Array:
 func _draw() -> void:
 	if _shapes.is_empty():
 		return
-	_draw_glass_polygon(_starter_triangle, 5, starter_triangle_alpha, false, 0.0)
-	for index in _current_index + 1:
-		if index == _current_index:
-			_draw_current_polygon(index)
-		else:
-			_draw_passive_polygon(index)
+	# Use musical progress so fading freezes with the polygons when paused.
+	var path_progress: float = float(_current_index) + rotator.get_transition_progress()
+	var starter_alpha := starter_triangle_alpha * _past_polygon_visibility(-1, path_progress)
+	if starter_alpha > 0.0:
+		_draw_glass_polygon(_starter_triangle, 5, starter_alpha, false, 0.0)
+	for index in range(maxi(0, _current_index - past_polygon_trail_length), _current_index):
+		_draw_passive_polygon(index, path_progress)
+	_draw_current_polygon(_current_index)
 	_draw_shared_entrance_edge(_current_index)
 
 
@@ -446,8 +449,18 @@ func _draw_current_polygon(index: int) -> void:
 	_draw_glass_polygon(displayed, index, spawn_alpha * current_fill_alpha, true, pulse_strength)
 
 
-func _draw_passive_polygon(index: int) -> void:
-	_draw_glass_polygon(_shapes[index], index, faded_alpha, false, 0.0)
+func _past_polygon_visibility(index: int, path_progress: float) -> float:
+	# Keep the latest ten intact, fade ranks 11–14, and hide rank 15 onward.
+	var age := path_progress - float(index + 1)
+	var fade_start := float(fully_visible_past_polygons)
+	var fade_end := float(maxi(past_polygon_trail_length, fully_visible_past_polygons + 1))
+	return 1.0 - smoothstep(fade_start, fade_end, age)
+
+
+func _draw_passive_polygon(index: int, path_progress: float) -> void:
+	var alpha := current_fill_alpha * _past_polygon_visibility(index, path_progress)
+	if alpha > 0.0:
+		_draw_glass_polygon(_shapes[index], index, alpha, false, 0.0)
 
 
 func _draw_glass_polygon(

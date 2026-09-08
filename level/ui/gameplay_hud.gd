@@ -48,7 +48,7 @@ static func gauge_color(value: float, maximum: float = 100.0) -> Color:
 
 
 func setup_boss(name: String, health: int, samurai: bool = false, time_mage: bool = false) -> void:
-	%BossPanel.visible = health > 0
+	%BossPanel.visible = health > 0 and not time_mage
 	%BossName.text = name
 	%BossHealth.max_value = health
 	%BossHealth.value = health

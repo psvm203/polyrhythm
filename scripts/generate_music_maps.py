@@ -131,23 +131,10 @@ def generate(stage, name, filename, tagged_bpm):
     sequence = polygon_sequence(contacts, beat_indices, beat)
     events = []
     boss, health = "", 0
-    if stage == 2:
-        boss, health = "TEMPO WARDEN", len(contacts)
-        events = [{"name": "boss_guard", "at": list(range(8, len(sequence) + 1, 8))}]
     if stage == 3:
-        boss, health = "SHAPE SAMURAI", len(contacts)
-        # Bake paired beat times first, then encode pairs as splittable hexagons.
-        packed, targets, index = [], [], 0
-        while index < len(sequence):
-            if index % 8 == 4 and index + 1 < len(sequence):
-                packed.append(6)
-                targets.append(len(packed))
-                index += 2
-            else:
-                packed.append(sequence[index])
-                index += 1
-        sequence = packed
-        events = [{"name": "samurai_split", "at": targets, "when_sides": 6, "replace_with": [3, 3]}]
+        # Ordinary triangle pairs preserve the chart's paired accents, without a boss event.
+        for index in range(4, len(sequence) - 1, 8):
+            sequence[index:index + 2] = [3, 3]
     if stage == 4:
         boss, health = "CHRONOMANCER", len(contacts)
         events = [{"name": "time_stop", "at": list(range(16, len(sequence) + 1, 16)), "duration_sec": 0.65}]
