@@ -4,12 +4,16 @@
 [ext_resource type="Script" path="res://editor/sequence_timeline.gd" id="2"]
 [ext_resource type="PackedScene" path="res://editor/ui/editor_guide.tscn" id="3_guide"]
 [sub_resource type="StyleBoxFlat" id="Panel"]
-bg_color = Color(0.035, 0.065, 0.12, 0.98)
+content_margin_left = 20.0
+content_margin_top = 16.0
+content_margin_right = 20.0
+content_margin_bottom = 16.0
+bg_color = Color(0.055, 0.075, 0.115, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.12, 0.42, 0.52, 0.8)
+border_color = Color(0.14, 0.19, 0.26, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_left = 10
@@ -56,7 +60,7 @@ offset_right = -28.0
 offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 16
 
 [node name="Header" type="HBoxContainer" parent="Root"]
 layout_mode = 2
@@ -84,8 +88,8 @@ text = "↷"
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.18, 1, 0.88, 1)
-theme_override_font_sizes/font_size = 27
-text = "PolyRhythm 레벨 에디터"
+theme_override_font_sizes/font_size = 24
+text = "PolyRhythm  /  레벨 에디터"
 vertical_alignment = 1
 [node name="GuideButton" type="Button" parent="Root/Header"]
 unique_name_in_owner = true
@@ -139,11 +143,13 @@ text = "맵"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-horizontal_scroll_mode = 2
+horizontal_scroll_mode = 1
 vertical_scroll_mode = 0
 [node name="Timeline" type="Control" parent="Root/CanvasPanel/CanvasRows/TimelineScroll"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(900, 250)
+size_flags_horizontal = 3
+size_flags_vertical = 3
 layout_mode = 2
 focus_mode = 2
 script = ExtResource("2")
@@ -151,9 +157,18 @@ script = ExtResource("2")
 [node name="PalettePanel" type="PanelContainer" parent="Root"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("Panel")
-[node name="PaletteRows" type="VBoxContainer" parent="Root/PalettePanel"]
+[node name="PaletteRows" type="HBoxContainer" parent="Root/PalettePanel"]
 layout_mode = 2
 theme_override_constants/separation = 6
+[node name="PaletteTitle" type="Label" parent="Root/PalettePanel/PaletteRows"]
+layout_mode = 2
+custom_minimum_size = Vector2(150, 0)
+text = "도형 추가"
+[node name="PaletteHint" type="Label" parent="Root/PalettePanel/PaletteRows"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.48, 0.57, 0.68, 1)
+text = "클릭 또는 숫자키 3–8"
 [node name="ShapePalette" type="HBoxContainer" parent="Root/PalettePanel/PaletteRows"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -161,93 +176,147 @@ alignment = 1
 theme_override_constants/separation = 6
 
 [node name="Settings" type="HBoxContainer" parent="Root"]
-custom_minimum_size = Vector2(0, 180)
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 16
 
-[node name="LevelPanel" type="PanelContainer" parent="Root/Settings"]
+[node name="Rhythm" type="PanelContainer" parent="Root/Settings"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.85
 theme_override_styles/panel = SubResource("Panel")
-[node name="LevelGrid" type="GridContainer" parent="Root/Settings/LevelPanel"]
+
+[node name="Rows" type="VBoxContainer" parent="Root/Settings/Rhythm"]
 layout_mode = 2
-columns = 4
-[node name="BpmLabel" type="Label" parent="Root/Settings/LevelPanel/LevelGrid"]
+theme_override_constants/separation = 12
+
+[node name="Heading" type="Label" parent="Root/Settings/Rhythm/Rows"]
+layout_mode = 2
+text = "리듬 설정"
+theme_override_font_sizes/font_size = 18
+
+[node name="Fields" type="GridContainer" parent="Root/Settings/Rhythm/Rows"]
+layout_mode = 2
+columns = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 12
+[node name="BpmLabel" type="Label" parent="Root/Settings/Rhythm/Rows/Fields"]
 layout_mode = 2
 text = "BPM"
-[node name="Bpm" type="SpinBox" parent="Root/Settings/LevelPanel/LevelGrid"]
+[node name="Bpm" type="SpinBox" parent="Root/Settings/Rhythm/Rows/Fields"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 38)
 layout_mode = 2
+size_flags_horizontal = 3
 min_value = 1.0
 max_value = 10000.0
 step = 0.01
 value = 120.0
-[node name="OffsetLabel" type="Label" parent="Root/Settings/LevelPanel/LevelGrid"]
+[node name="OffsetLabel" type="Label" parent="Root/Settings/Rhythm/Rows/Fields"]
 layout_mode = 2
 text = "시작 지점"
-[node name="MusicOffset" type="SpinBox" parent="Root/Settings/LevelPanel/LevelGrid"]
+[node name="MusicOffset" type="SpinBox" parent="Root/Settings/Rhythm/Rows/Fields"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 38)
 layout_mode = 2
+size_flags_horizontal = 3
 max_value = 600.0
 step = 0.01
 suffix = "초"
-[node name="MusicPath" type="LineEdit" parent="Root/Settings/LevelPanel/LevelGrid"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(290, 38)
+
+[node name="Music" type="PanelContainer" parent="Root/Settings"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.7
+theme_override_styles/panel = SubResource("Panel")
+
+[node name="Rows" type="VBoxContainer" parent="Root/Settings/Music"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Heading" type="Label" parent="Root/Settings/Music/Rows"]
+layout_mode = 2
+text = "음악"
+theme_override_font_sizes/font_size = 18
+
+[node name="File" type="HBoxContainer" parent="Root/Settings/Music/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 8
+[node name="MusicPath" type="LineEdit" parent="Root/Settings/Music/Rows/File"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
 placeholder_text = "WAV 또는 res:// 음악 경로"
-[node name="MusicButton" type="Button" parent="Root/Settings/LevelPanel/LevelGrid"]
+[node name="MusicButton" type="Button" parent="Root/Settings/Music/Rows/File"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "음악 찾기"
-[node name="MusicPreviewButton" type="Button" parent="Root/Settings/LevelPanel/LevelGrid"]
+
+[node name="Transport" type="HBoxContainer" parent="Root/Settings/Music/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 12
+[node name="MusicPreviewButton" type="Button" parent="Root/Settings/Music/Rows/Transport"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(72, 38)
 layout_mode = 2
 text = "▶"
-[node name="MusicStopButton" type="Button" parent="Root/Settings/LevelPanel/LevelGrid"]
+[node name="MusicStopButton" type="Button" parent="Root/Settings/Music/Rows/Transport"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(72, 38)
 layout_mode = 2
 text = "■"
-[node name="MusicSeek" type="HSlider" parent="Root/Settings/LevelPanel/LevelGrid"]
+[node name="MusicSeek" type="HSlider" parent="Root/Settings/Music/Rows/Transport"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(290, 38)
 layout_mode = 2
+size_flags_horizontal = 3
 max_value = 1.0
 step = 0.01
-[node name="MusicTime" type="Label" parent="Root/Settings/LevelPanel/LevelGrid"]
+[node name="MusicTime" type="Label" parent="Root/Settings/Music/Rows/Transport"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "0:00 / 0:00"
 vertical_alignment = 1
-[node name="EventLabel" type="Label" parent="Root/Settings/LevelPanel/LevelGrid"]
+
+[node name="Events" type="PanelContainer" parent="Root/Settings"]
 layout_mode = 2
-text = "이벤트"
-vertical_alignment = 1
-[node name="EventType" type="OptionButton" parent="Root/Settings/LevelPanel/LevelGrid"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(190, 38)
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.0
+theme_override_styles/panel = SubResource("Panel")
+
+[node name="Rows" type="VBoxContainer" parent="Root/Settings/Events"]
 layout_mode = 2
-[node name="EventApply" type="Button" parent="Root/Settings/LevelPanel/LevelGrid"]
+theme_override_constants/separation = 12
+
+[node name="Heading" type="Label" parent="Root/Settings/Events/Rows"]
+layout_mode = 2
+text = "도형 이벤트"
+theme_override_font_sizes/font_size = 18
+
+[node name="SelectionInfo" type="Label" parent="Root/Settings/Events/Rows"]
+layout_mode = 2
 unique_name_in_owner = true
-custom_minimum_size = Vector2(120, 38)
+text = "타임라인에서 도형을 선택하세요"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.48, 0.57, 0.68, 1)
+
+[node name="Actions" type="HBoxContainer" parent="Root/Settings/Events/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 8
+[node name="EventType" type="OptionButton" parent="Root/Settings/Events/Rows/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+[node name="EventApply" type="Button" parent="Root/Settings/Events/Rows/Actions"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "적용"
-[node name="EventRemove" type="Button" parent="Root/Settings/LevelPanel/LevelGrid"]
+[node name="EventRemove" type="Button" parent="Root/Settings/Events/Rows/Actions"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(120, 38)
 layout_mode = 2
 text = "제거"
+
 [node name="Footer" type="HBoxContainer" parent="Root"]
 layout_mode = 2
 [node name="Status" type="Label" parent="Root/Footer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-text = "팔레트에서 도형을 추가해 레벨을 만드세요."
+text = "도형을 드래그해 순서를 변경하세요.  ·  Delete 삭제  ·  Ctrl+D 복제"
 [node name="ValidateButton" type="Button" parent="Root/Footer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 42)

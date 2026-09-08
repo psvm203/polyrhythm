@@ -1,5 +1,6 @@
 extends Control
 
+const EditorTheme = preload("res://editor/ui/editor_theme.gd")
 const LevelDataScript = preload("res://level/data/level_data.gd")
 const ProgressStoreScript = preload("res://level/progress_store.gd")
 const AudioStreamLoaderScript = preload("res://level/audio/audio_stream_loader.gd")
@@ -28,6 +29,8 @@ var _saving_pending_action := false
 
 
 func _ready() -> void:
+	theme = EditorTheme.create()
+	EditorTheme.primary(%PlayButton)
 	%BackButton.pressed.connect(_request_exit)
 	%UndoButton.pressed.connect(_undo)
 	%RedoButton.pressed.connect(_redo)
@@ -87,6 +90,7 @@ func _ready() -> void:
 	%Timeline.grab_focus()
 	_set_map_mode(false)
 	_reset_history()
+	_update_summary()
 	_sync_event_controls()
 
 
@@ -127,7 +131,7 @@ func _populate(data: Dictionary) -> void:
 
 
 func _update_summary() -> void:
-	%SequenceSummary.text = "도형 %d개" % %Timeline.sequence.size()
+	%SequenceSummary.text = "시퀀스   /   도형 %d개" % %Timeline.sequence.size()
 
 
 func _on_sequence_changed(sequence: Array[int]) -> void:
@@ -237,6 +241,7 @@ func _commit_event_change() -> void:
 
 func _sync_event_controls() -> void:
 	var polygon_number: int = %Timeline.selected_index + 1
+	%SelectionInfo.text = "%02d번 도형 · %d각형" % [polygon_number, %Timeline.sequence[polygon_number - 1]] if polygon_number > 0 else "타임라인에서 도형을 선택하세요"
 	%EventApply.disabled = polygon_number <= 0
 	%EventRemove.disabled = polygon_number <= 0 or not _has_event_at(polygon_number)
 	if %EventType.item_count == 0:

@@ -29,6 +29,10 @@ var _event_tiles: Dictionary = {}
 func _ready() -> void:
 	custom_minimum_size.y = 250.0
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	resized.connect(queue_redraw)
+	if get_parent() is ScrollContainer:
+		get_parent().get_h_scroll_bar().value_changed.connect(func(_value: float) -> void: queue_redraw())
+		get_parent().get_v_scroll_bar().value_changed.connect(func(_value: float) -> void: queue_redraw())
 
 
 func set_sequence(values: Array) -> void:
@@ -173,6 +177,7 @@ func _tile_rect(index: int) -> Rect2:
 
 
 func _draw() -> void:
+	_draw_grid()
 	if sequence.is_empty():
 		draw_string(ThemeDB.fallback_font, Vector2(54, 126), "아래 팔레트에서 도형을 추가하세요", HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color("7992ad"))
 		return
@@ -192,6 +197,21 @@ func _draw() -> void:
 		_draw_drag_preview()
 
 
+func _draw_grid() -> void:
+	# Restrict the grid to the visible region even for very long levels.
+	var scroll := get_parent() as ScrollContainer
+	var origin := Vector2(scroll.scroll_horizontal, scroll.scroll_vertical) if scroll else Vector2.ZERO
+	var visible_size := scroll.size if scroll else size
+	for x in range(int(origin.x / 28) * 28, int(origin.x + visible_size.x) + 28, 28):
+		for y in range(int(origin.y / 28) * 28, int(origin.y + visible_size.y) + 28, 28):
+			draw_circle(Vector2(x, y), 0.8, Color("223043"))
+	if not _map_mode:
+		draw_line(Vector2(origin.x, 32), Vector2(origin.x + visible_size.x, 32), Color("29384b"), 1)
+		for index in sequence.size():
+			var x := _tile_rect(index).get_center().x
+			draw_line(Vector2(x, 26), Vector2(x, 38), Color("526a80"), 1)
+
+
 func _draw_tile(index: int) -> void:
 	var sides := sequence[index]
 	var center := _tile_rect(index).get_center()
@@ -201,11 +221,13 @@ func _draw_tile(index: int) -> void:
 		var angle := -PI * 0.5 + TAU * point_index / sides
 		points.append(center + Vector2(cos(angle), sin(angle)) * radius)
 	var selected := index == selected_index
-	var fill := Color("2de2c5") if selected else Color("173d59")
+	if selected:
+		draw_style_box(_selection_style(), _tile_rect(index).grow(10))
+	var fill := Color("24685f") if selected else Color("1c3448")
 	var outline := Color("c9fff7") if selected else Color("48a9b8")
 	draw_colored_polygon(points, fill)
 	for point_index in sides:
-		draw_line(points[point_index], points[(point_index + 1) % sides], outline, 3.0, true)
+		draw_line(points[point_index], points[(point_index + 1) % sides], outline, 2.0, true)
 	var label := str(sides)
 	var font := ThemeDB.fallback_font
 	var width := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
@@ -309,3 +331,12 @@ func _rebuild_map() -> void:
 	_map_offset = Vector2.ONE * CANVAS_PADDING - minimum
 	var map_size := maximum - minimum + Vector2.ONE * CANVAS_PADDING * 2.0
 	custom_minimum_size = Vector2(maxf(900.0, map_size.x), maxf(250.0, map_size.y))
+
+
+func _selection_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.39, 0.89, 0.80, 0.07)
+	style.border_color = Color(0.39, 0.89, 0.80, 0.35)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(12)
+	return style
