@@ -24,6 +24,8 @@ func _run() -> void:
 	var now := [1_000_000]
 	level.conductor.time_source_usec = func() -> int: return now[0]
 	level.conductor.judgment_offset_sec = 0.0
+	var displayed_results: Array[String] = []
+	level.conductor.judged.connect(func(_result, _index, _delta): displayed_results.append(level.judgement.label.text))
 	level._on_countdown_finished()
 	now[0] += 250_000
 	var input := InputEventKey.new()
@@ -33,6 +35,10 @@ func _run() -> void:
 	# Six misses exhaust the starting gauge; derive the deadline from this stage.
 	now[0] = 1_000_000 + roundi((level.conductor.scheduled_judgment_times[5] + 0.2) * 1_000_000)
 	level.conductor._process(0.0)
+	_expect(displayed_results.size() == 7, "early input and all six misses still emit judgments")
+	_expect(displayed_results[0] == "Too Fast" and displayed_results[1] == "Too Fast", "Too Slow immediately after Too Fast does not replace the label")
+	_expect(displayed_results[2] == "Too Slow", "the following Too Slow displays normally")
+	_expect(level._run_state.judgments["Too Slow"] == 6 and level._run_state.gauge == 0.0, "hidden Too Slow still counts and depletes the gauge")
 	_expect(level.conductor.paused, "gameplay clock pauses on result")
 	_expect(level.conductor.game_time > 0.5, "gameplay clock advances before result")
 	_expect(not level.music.playing, "level music stops when result opens")

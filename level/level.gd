@@ -73,6 +73,7 @@ var _event_system: LevelEventSystem = LevelEventSystemScript.new()
 var level_data: LevelData
 var _is_custom_level := false
 var _active_dialogue_id := ""
+var _previous_judgment_result := ""
 
 
 func _ready() -> void:
@@ -181,9 +182,13 @@ func _on_dialogue_finished() -> void:
 func _on_judged(result: String, polygon_index: int, timing_delta_ms: float) -> void:
 	var resolution := EventHandlerRegistryScript.resolve_judgment(_event_system, polygon_index, result)
 	var resolved_result: String = resolution["result"]
+	var display_result: String = resolution["display_result"]
+	var omit_display := display_result == "Too Slow" and _previous_judgment_result == "Too Fast"
+	# Even hidden judgments become the previous result for the next judgment.
+	_previous_judgment_result = resolved_result
 	if judgement != null:
-		var display_result: String = resolution["display_result"]
-		judgement.show_judgement(display_result)
+		if not omit_display:
+			judgement.show_judgement(display_result)
 		_input_manager_call("play_rumble", [display_result])
 	if _boss_health > 0:
 		_boss_health = maxi(0, _boss_health - level_data.boss_damage(resolved_result, resolution["guarded"]))
