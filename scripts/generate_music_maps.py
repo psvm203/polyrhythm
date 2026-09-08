@@ -1,10 +1,11 @@
 """Rebuild campaign charts from local audio. Requires numpy and ffmpeg.
 
-Run from any directory: python3 scripts/generate_music_maps.py
+Run: python3 scripts/generate_music_maps.py --source-dir /path/to/originals
 Times refer to audible transients in the exported audio, after event expansion.
 No random number generator is used. The report retains every matched onset.
 """
 
+import argparse
 import hashlib
 import json
 import subprocess
@@ -75,8 +76,8 @@ def polygon_sequence(contacts, beat_indices, beat):
     return sequence
 
 
-def generate(stage, name, filename, tagged_bpm):
-    source = ROOT / ("level/data" if stage == 1 else ".songs") / filename
+def generate(stage, name, filename, tagged_bpm, source_dir=ROOT / "level/data"):
+    source = (ROOT / "level/data" if stage == 1 else source_dir) / filename
     samples = decode(source)
     times, envelope, peaks, strengths, fit = analyze(samples, tagged_bpm)
     _, bpm, phase = fit
@@ -158,5 +159,14 @@ def generate(stage, name, filename, tagged_bpm):
 
 
 if __name__ == "__main__":
-    reports = [generate(i, *track) for i, track in enumerate(TRACKS, 1)]
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source-dir", type=Path, default=ROOT / "level/data",
+                        help="External folder containing original WAV files for stages 2–8")
+    args = parser.parse_args()
+    missing = [str((ROOT / "level/data" if i == 1 else args.source_dir) / track[1])
+               for i, track in enumerate(TRACKS, 1)
+               if not ((ROOT / "level/data" if i == 1 else args.source_dir) / track[1]).is_file()]
+    if missing:
+        parser.error("Original WAV files are required for regeneration; supply --source-dir. Missing: " + ", ".join(missing))
+    reports = [generate(i, *track, source_dir=args.source_dir) for i, track in enumerate(TRACKS, 1)]
     (ROOT / "docs/music_maps.json").write_text(json.dumps(reports, indent=2) + "\n")
