@@ -3,6 +3,8 @@ extends CanvasLayer
 @onready var score_label: Label = %Score
 @onready var combo_label: Label = %Combo
 @onready var gauge_bar: ProgressBar = %Gauge
+@onready var progress_ring: Control = %ProgressRing
+@onready var progress_label: Label = %ProgressPercent
 
 var _gauge_fill := StyleBoxFlat.new()
 
@@ -22,6 +24,11 @@ func update_stats(stats: Dictionary) -> void:
 	combo_label.text = "%d Combo" % stats["combo"] if stats["combo"] > 1 else ""
 	gauge_bar.value = stats["gauge"]
 	_update_gauge_color(gauge_bar.value)
+	var total := int(stats.get("total", 0))
+	var resolved := int(stats.get("resolved", 0))
+	var progress := clampf(float(resolved) / total, 0.0, 1.0) if total > 0 else 0.0
+	progress_ring.set("progress", progress)
+	progress_label.text = "%d%%" % floori(progress * 100.0)
 
 
 func _update_gauge_color(value: float) -> void:
