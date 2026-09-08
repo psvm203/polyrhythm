@@ -99,7 +99,7 @@ def generate(stage, name, filename, tagged_bpm):
         if not len(candidates):
             continue
         chosen = candidates[np.argmax(strengths[candidates])]
-        # Fast stages add offbeats only where the track actually has a strong attack.
+        # Analyze strong offbeats too; the difficulty filter below selects playable notes.
         if index % 1 and strengths[chosen] < np.percentile(strengths, 65):
             continue
         contact = round(float(peaks[chosen] - start), 6)
@@ -127,6 +127,10 @@ def generate(stage, name, filename, tagged_bpm):
                 verified.append((round(nearest, 6), match, index))
                 codec_adjustments.append(adjustment * 1000)
         contacts, matches, beat_indices = map(list, zip(*verified))
+    if stage >= 7:
+        # Fast music plays at half-time: preserve measured attacks on every second beat.
+        relaxed = [(t, m, i) for t, m, i in zip(contacts, matches, beat_indices) if i % 2 == 0]
+        contacts, matches, beat_indices = map(list, zip(*relaxed))
     assert len(contacts) >= 20, (stage, len(contacts))
     sequence = polygon_sequence(contacts, beat_indices, beat)
     events = []

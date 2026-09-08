@@ -1,11 +1,6 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
-
-*.WAV
-!level/data/BR-Freaky_feat_LezaLee_-fulllength-loopable-121_9BPM-Dm.WAV
-!main/audio/ui_focus.wav
-!main/audio/ui_click.wav
 .DS_Store
 .songs/*
 !.songs/.gdignore
