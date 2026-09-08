@@ -6,6 +6,8 @@ var bpm: float = 120.0
 var duration_sec: float = 0.0
 var music_path: String = ""
 var music_start_offset_sec: float = 0.0
+# Absolute playback seconds, one per polygon AFTER event replacements.
+var note_times_sec := PackedFloat32Array()
 var boss_name: String = ""
 var boss_health: int = 0
 var events: Array[Dictionary] = []
@@ -21,6 +23,17 @@ static func from_yaml(path: String) -> LevelData:
 	result.duration_sec = maxf(_finite_float(result._yaml.get("duration_sec", 0.0), 0.0), 0.0)
 	result.music_path = str(result._yaml.get("music_path", ""))
 	result.music_start_offset_sec = maxf(_finite_float(result._yaml.get("music_start_offset_sec", 0.0), 0.0), 0.0)
+	var raw_times: Variant = result._yaml.get("note_times_sec", [])
+	if raw_times is Array:
+		var previous := 0.0
+		for value in raw_times:
+			var contact := _finite_float(value, -1.0)
+			if contact <= previous:
+				result.note_times_sec.clear()
+				push_error("note_times_sec must contain increasing positive seconds: %s" % path)
+				break
+			result.note_times_sec.append(contact)
+			previous = contact
 	result.boss_name = str(result._yaml.get("boss_name", ""))
 	result.boss_health = maxi(_safe_int(result._yaml.get("boss_health", 0), 0), 0)
 	var raw_events: Variant = result._yaml.get("events", [])
@@ -123,6 +136,23 @@ static func validate_detailed(data: Dictionary, source_path: String = "") -> Arr
 	var music := str(data.get("music_path", ""))
 	if music.is_empty() or not FileAccess.file_exists(music):
 		_append_diagnostic(diagnostics, "missing_music", "music_path", "재생할 음악 파일을 찾을 수 없습니다.", source_path)
+	if data.has("note_times_sec"):
+		var times: Variant = data["note_times_sec"]
+		var event_system = preload("res://level/events/level_event_system.gd").new()
+		var definitions: Variant = data.get("events", [])
+		event_system.setup(definitions if definitions is Array else [])
+		var expected: int = event_system.transform_sequence(expand_layout(data)).size()
+		var valid: bool = times is Array and times.size() == expected
+		var previous := 0.0
+		var end := _finite_float(data.get("duration_sec", 0.0), 0.0)
+		if valid:
+			for value in times:
+				var contact := _finite_float(value, -1.0)
+				if contact <= previous or (end > 0.0 and contact >= end):
+					valid = false
+				previous = contact
+		if not valid:
+			_append_diagnostic(diagnostics, "invalid_note_times", "note_times_sec", "입력 시각은 이벤트 적용 후 도형 수와 같아야 하며, 종료 전까지 증가해야 합니다.", source_path)
 	return diagnostics
 
 
@@ -142,7 +172,7 @@ static func _append_diagnostic(
 
 
 static func to_yaml(data: Dictionary) -> String:
-	var keys := ["sides_sequence", "repeat_count", "bpm", "duration_sec", "music_path", "music_start_offset_sec", "boss_name", "boss_health", "events", "tutorial_speaker", "tutorial_lines"]
+	var keys := ["sides_sequence", "repeat_count", "bpm", "duration_sec", "music_path", "music_start_offset_sec", "note_times_sec", "boss_name", "boss_health", "events", "tutorial_speaker", "tutorial_lines"]
 	var lines := PackedStringArray(["# Polyrhythm custom level"])
 	for key in keys:
 		if data.has(key):

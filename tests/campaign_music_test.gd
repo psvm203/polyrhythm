@@ -1,0 +1,108 @@
+extends SceneTree
+
+const Catalog = preload("res://level/data/stage_catalog.gd")
+const Data = preload("res://level/data/level_data.gd")
+const Progress = preload("res://level/progress_store.gd")
+const LevelScene = preload("res://level/level.tscn")
+const MainScene = preload("res://main/main_screen.tscn")
+
+var failures := 0
+var assertions := 0
+
+
+func _init() -> void:
+	call_deferred("_run")
+
+
+func _run() -> void:
+	var original_save_path := Progress.save_path
+	Progress.save_path = "/tmp/polyrhythm_campaign_progress_%d.cfg" % OS.get_process_id()
+	var original_stage := Progress.selected_stage
+	var reports: Array = JSON.parse_string(FileAccess.get_file_as_string("res://docs/music_maps.json"))
+	var music_paths := {}
+	for stage in Catalog.stage_numbers():
+		Progress.selected_stage = stage
+		var data = Data.from_yaml(Catalog.data_path(stage))
+		expect(Data.validate(data.dictionary()).is_empty(), "stage %d chart validates" % stage)
+		expect(not music_paths.has(data.music_path), "stage %d uses its own music" % stage)
+		music_paths[data.music_path] = true
+		var level = LevelScene.instantiate()
+		level.timing_trace_path = "/tmp/polyrhythm_campaign_trace.json"
+		root.add_child(level)
+		level.countdown.countdown_finished.disconnect(level._on_countdown_finished)
+		level.countdown.hide()
+		var now := [1_000_000]
+		level.conductor.time_source_usec = func() -> int: return now[0]
+		level.conductor.detailed_timing_logs = false
+		level.conductor.judgment_offset_sec = 0.0
+		level._on_countdown_finished()
+		var times: PackedFloat32Array = level.conductor.scheduled_judgment_times
+		expect(times.size() == level._level_sequence.size(), "expanded geometry has one onset per polygon")
+		expect(level.music.stream != null and level.music.stream.get_length() + 0.01 >= data.duration_sec, "music covers full stage")
+		var report: Dictionary = reports[stage - 1]
+		for index in times.size():
+			var source_time: float = report["note_times_sec"][index]
+			expect(absf(times[index] - source_time) <= 0.00001, "note matches packaged audio attack")
+			now[0] = 1_000_000 + ceili(times[index] * 1_000_000)
+			level.conductor._process(0.0)
+			expect(level.rotator.get_entrance_edge_gap() < 0.1, "polygon edges meet on the audio attack")
+			var tap := InputEventKey.new()
+			tap.physical_keycode = KEY_SPACE
+			tap.pressed = true
+			level.conductor._unhandled_input(tap)
+			# Time-stop pauses both clock and audio; the deterministic clock stays fixed.
+			if level._time_stopped:
+				await create_timer(0.7).timeout
+			expect(level._run_state.resolved_notes == index + 1, "audio-timed input resolves exactly one polygon")
+			expect(level._run_state.judgments["Perfect"] == index + 1, "all audio attacks score Perfect")
+		expect(not level._level_ended, "music tail remains playable until configured end")
+		now[0] = 1_000_000 + ceili(data.duration_sec * 1_000_000)
+		level._process(0.0)
+		expect(level._level_ended and not level.music.playing, "stage and music end together")
+		expect(level._boss_health == 0, "boss health is achievable with generated chart")
+		level.free()
+	# Start locked, then exercise the actual settings button and reloaded persistence.
+	var config := ConfigFile.new()
+	config.set_value("progress", "highest_unlocked_stage", 1)
+	config.set_value("stage_1", "score", 12345)
+	config.save(Progress.save_path)
+	var main = MainScene.instantiate()
+	root.add_child(main)
+	await process_frame
+	expect(main._stage_buttons().size() == 8, "all eight cards are present")
+	expect(main._stage_buttons()[7].disabled, "stage eight starts locked")
+	main.get_node("%UnlockAllStagesButton").pressed.emit()
+	expect(Progress.highest_unlocked_stage() == 8, "settings unlock persists all eight stages")
+	expect(Progress.stage_record(1)["score"] == 12345, "unlock preserves existing records")
+	for button in main._stage_buttons():
+		expect(not button.disabled, "unlock immediately enables every stage card")
+	expect(main.get_node("%UnlockAllStagesButton").text == "해금 완료", "settings confirms unlock")
+	main.stage_screen.show()
+	await process_frame
+	await process_frame
+	var cards: GridContainer = main.get_node("StageScreen/StageLayout/CardsSlot/Cards")
+	for card in cards.get_children():
+		expect(main.get_global_rect().encloses(card.get_global_rect()), "stage card fits in viewport")
+		expect(card.get_global_rect().encloses(card.get_node("Items/Best").get_global_rect()), "record text fits inside card")
+	main.settings_screen.show()
+	await process_frame
+	var unlock_button: Button = main.get_node("%UnlockAllStagesButton")
+	expect(main.get_global_rect().encloses(unlock_button.get_global_rect()), "unlock button fits in settings viewport")
+	main.background_music.stop()
+	main.stage_preview_music.stop()
+	main.queue_free()
+	# Release outstanding countdown timers and audio playback references.
+	await create_timer(1.2).timeout
+	Progress.selected_stage = original_stage
+	DirAccess.remove_absolute(Progress.save_path)
+	Progress.save_path = original_save_path
+	DirAccess.remove_absolute("/tmp/polyrhythm_campaign_trace.json")
+	print("Campaign music tests: %d assertions, %d failures" % [assertions, failures])
+	quit(1 if failures else 0)
+
+
+func expect(condition: bool, message: String) -> void:
+	assertions += 1
+	if not condition:
+		failures += 1
+		push_error(message)

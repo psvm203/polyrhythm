@@ -9,7 +9,7 @@ const _STAGES := {
 		"data_path": "res://level/data/level_1.yaml",
 	},
 	2: {
-		"name": "Beat Flow",
+		"name": "Electric Elegance",
 		"data_path": "res://level/data/level_2.yaml",
 	},
 	3: {
@@ -19,6 +19,22 @@ const _STAGES := {
 	4: {
 		"name": "Time Rift",
 		"data_path": "res://level/data/level_4.yaml",
+	},
+	5: {
+		"name": "Take Me Over",
+		"data_path": "res://level/data/level_5.yaml",
+	},
+	6: {
+		"name": "Music Is Life",
+		"data_path": "res://level/data/level_6.yaml",
+	},
+	7: {
+		"name": "Keep Me Down",
+		"data_path": "res://level/data/level_7.yaml",
+	},
+	8: {
+		"name": "Freak Tonight",
+		"data_path": "res://level/data/level_8.yaml",
 	},
 }
 

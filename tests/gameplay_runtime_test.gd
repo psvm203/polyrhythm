@@ -10,6 +10,8 @@ func _init() -> void:
 
 
 func _run() -> void:
+	var progress = preload("res://level/progress_store.gd")
+	progress.save_path = "/tmp/polyrhythm_gameplay_progress_%d.cfg" % OS.get_process_id()
 	var level = LevelScene.instantiate()
 	var trace_path := "/tmp/polyrhythm_gameplay_runtime_trace.json"
 	level.timing_trace_path = trace_path
@@ -56,7 +58,7 @@ func _run() -> void:
 	_expect(timed_level.level_data.duration_sec == 55.0, "stage one has a 55-second duration")
 	for contact in timed_level.conductor.scheduled_judgment_times:
 		_expect(contact < 55.0, "stage one has no notes beyond the cutoff")
-		now[0] = 1_000_000 + roundi(contact * 1_000_000)
+		now[0] = 1_000_000 + ceili(contact * 1_000_000)
 		timed_level.conductor._unhandled_input(input)
 	_expect(timed_level._run_state.resolved_notes == timed_level._run_state.total_notes, "all shortened stage notes resolve")
 	_expect(not timed_level._level_ended and timed_level.music.playing, "final note leaves music playing until cutoff")
@@ -74,6 +76,7 @@ func _run() -> void:
 	_expect(not timed_level.music.playing and timed_level.conductor.paused, "55 seconds stops music and gameplay together")
 	DirAccess.remove_absolute(trace_path)
 	timed_level.queue_free()
+	DirAccess.remove_absolute(progress.save_path)
 	if _failures > 0:
 		push_error("Gameplay runtime tests failed: %d" % _failures)
 		quit(1)

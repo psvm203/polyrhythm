@@ -11,6 +11,7 @@ static func build(
 	early_window_sec: float,
 	late_window_sec: float,
 	judgment_offset_sec: float = 0.0,
+	note_times_sec: PackedFloat32Array = PackedFloat32Array(),
 ):
 	var timeline = (load("res://level/timing/note_timeline.gd") as GDScript).new()
 	var cursor := 0.0
@@ -18,6 +19,9 @@ static func build(
 	for index in sequence.size():
 		var duration := float(sequence[index]) * 120.0 / safe_bpm
 		var contact := cursor + duration
+		if note_times_sec.size() == sequence.size():
+			contact = note_times_sec[index]
+			duration = contact - cursor
 		var center := contact + judgment_offset_sec
 		timeline._entries.append({
 			"index": index,

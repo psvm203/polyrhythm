@@ -6,7 +6,8 @@ const ProgressStoreScript = preload("res://level/progress_store.gd")
 const SettingsStoreScript = preload("res://main/settings_store.gd")
 const StageCatalogScript = preload("res://level/data/stage_catalog.gd")
 const ScreenTransitionControllerScript = preload("res://main/screen_transition_controller.gd")
-const STAGE_ONE_BGM: AudioStream = preload("res://level/data/BR-Freaky_feat_LezaLee_-fulllength-loopable-121_9BPM-Dm.WAV")
+const LevelDataScript = preload("res://level/data/level_data.gd")
+const AudioStreamLoaderScript = preload("res://level/audio/audio_stream_loader.gd")
 const CYAN := Color("19e0db")
 const MAGENTA := Color("ed1671")
 
@@ -57,16 +58,14 @@ func _ready() -> void:
 	_connect_ui_sfx(self)
 	%StartButton.pressed.connect(_show_stage_select)
 	%BackButton.pressed.connect(_hide_stage_select)
-	%StageOneButton.pressed.connect(_start_game.bind(1))
-	%StageTwoButton.pressed.connect(_start_game.bind(2))
-	%StageThreeButton.pressed.connect(_start_game.bind(3))
-	%StageFourButton.pressed.connect(_start_game.bind(4))
-	%EditorButton.pressed.connect(_open_level_editor)
+	for stage_number in StageCatalogScript.stage_numbers():
+		var card: Control = $StageScreen/StageLayout/CardsSlot/Cards.get_child(stage_number - 1)
+		var button: BaseButton = card.get_child(card.get_child_count() - 1)
+		button.pressed.connect(_start_game.bind(stage_number))
+		var data = LevelDataScript.from_yaml(StageCatalogScript.data_path(stage_number))
+		_setup_stage_card(button, card, card.get_node("Items/Record"), AudioStreamLoaderScript.load_stream(data.music_path))
 	_refresh_stage_cards()
-	_setup_stage_card(%StageOneButton, $StageScreen/StageLayout/CardsSlot/Cards/StageOne, $StageScreen/StageLayout/CardsSlot/Cards/StageOne/Items/Record, STAGE_ONE_BGM)
-	_setup_stage_card(%StageTwoButton, $StageScreen/StageLayout/CardsSlot/Cards/StageTwo, $StageScreen/StageLayout/CardsSlot/Cards/StageTwo/Items/Record, null)
-	_setup_stage_card(%StageThreeButton, $StageScreen/StageLayout/CardsSlot/Cards/StageThree, $StageScreen/StageLayout/CardsSlot/Cards/StageThree/Items/Record, null)
-	_setup_stage_card(%StageFourButton, $StageScreen/StageLayout/CardsSlot/Cards/StageFour, $StageScreen/StageLayout/CardsSlot/Cards/StageFour/Items/Record, null)
+	%EditorButton.pressed.connect(_open_level_editor)
 	%SettingsButton.pressed.connect(_show_settings)
 	%SettingsBackButton.pressed.connect(_hide_settings)
 	%FullscreenToggle.toggled.connect(_set_fullscreen)
@@ -83,7 +82,7 @@ func _ready() -> void:
 	%MasterEnabled.toggled.connect(_set_audio_enabled.bind("master_enabled", %MasterEnabled))
 	%MusicEnabled.toggled.connect(_set_audio_enabled.bind("music_enabled", %MusicEnabled))
 	%SfxEnabled.toggled.connect(_set_audio_enabled.bind("sfx_enabled", %SfxEnabled))
-	%SkipSeenDialogue.toggled.connect(_set_skip_seen_dialogue)
+	%UnlockAllStagesButton.pressed.connect(_unlock_all_stages)
 	%MasterSlider.value_changed.connect(_play_slider_sfx)
 	%MusicSlider.value_changed.connect(_play_slider_sfx)
 	%SfxSlider.value_changed.connect(_play_slider_sfx)
@@ -120,21 +119,13 @@ func _input_manager() -> Node:
 
 func _refresh_stage_cards() -> void:
 	var highest := ProgressStoreScript.highest_unlocked_stage()
-	var cards: Array[Control] = [
-		$StageScreen/StageLayout/CardsSlot/Cards/StageOne,
-		$StageScreen/StageLayout/CardsSlot/Cards/StageTwo,
-		$StageScreen/StageLayout/CardsSlot/Cards/StageThree,
-		$StageScreen/StageLayout/CardsSlot/Cards/StageFour,
-	]
-	var records: Array[Control] = [
-		$StageScreen/StageLayout/CardsSlot/Cards/StageOne/Items/Record,
-		$StageScreen/StageLayout/CardsSlot/Cards/StageTwo/Items/Record,
-		$StageScreen/StageLayout/CardsSlot/Cards/StageThree/Items/Record,
-		$StageScreen/StageLayout/CardsSlot/Cards/StageFour/Items/Record,
-	]
-	var buttons: Array[BaseButton] = [%StageOneButton, %StageTwoButton, %StageThreeButton, %StageFourButton]
-	var active_style := cards[0].get_theme_stylebox("panel").duplicate()
-	var locked_style := cards[1].get_theme_stylebox("panel").duplicate()
+	var cards := $StageScreen/StageLayout/CardsSlot/Cards.get_children()
+	var records: Array[Control] = []
+	for card in cards:
+		records.append(card.get_node("Items/Record"))
+	var buttons := _stage_buttons()
+	var active_style: StyleBox = cards[0].get_theme_stylebox("panel").duplicate()
+	var locked_style: StyleBox = cards[1].get_theme_stylebox("panel").duplicate()
 	for index in cards.size():
 		var active := index + 1 <= highest
 		records[index].set("active", active)
@@ -173,6 +164,10 @@ func _configure_stage_focus(buttons: Array[BaseButton], active_count: int) -> vo
 		var next_index := wrapi(index + 1, 0, count)
 		buttons[index].focus_neighbor_left = buttons[index].get_path_to(buttons[previous_index])
 		buttons[index].focus_neighbor_right = buttons[index].get_path_to(buttons[next_index])
+		var vertical_index := index + 4 if index < 4 else index - 4
+		var vertical: Control = buttons[vertical_index] if vertical_index < count else %BackButton
+		buttons[index].focus_neighbor_top = buttons[index].get_path_to(vertical)
+		buttons[index].focus_neighbor_bottom = buttons[index].get_path_to(vertical)
 
 
 func _rating_color(tier: String) -> Color:
@@ -567,8 +562,7 @@ func _initialize_settings() -> void:
 	var settings := SettingsStoreScript.load_settings()
 	SettingsStoreScript.apply(settings)
 	%FullscreenToggle.set_pressed_no_signal(settings["fullscreen"])
-	%SkipSeenDialogue.set_pressed_no_signal(settings["skip_seen_dialogue"])
-	_update_skip_seen_dialogue(settings["skip_seen_dialogue"])
+	_update_unlock_button()
 	%TimingSlider.set_value_no_signal(settings["timing_offset_ms"])
 	_update_timing_offset_label(settings["timing_offset_ms"])
 	_setup_resolution(%ResolutionOption, settings)
@@ -600,13 +594,25 @@ func _set_audio_enabled(enabled: bool, key: String, toggle: Button) -> void:
 	SettingsStoreScript.save_setting(key, enabled)
 
 
-func _set_skip_seen_dialogue(enabled: bool) -> void:
-	_update_skip_seen_dialogue(enabled)
-	SettingsStoreScript.save_setting("skip_seen_dialogue", enabled)
+func _unlock_all_stages() -> void:
+	if ProgressStoreScript.unlock_all_stages() != OK:
+		%UnlockAllStagesButton.text = "다시 시도"
+		return
+	_refresh_stage_cards()
+	_update_unlock_button()
 
 
-func _update_skip_seen_dialogue(enabled: bool) -> void:
-	%SkipSeenDialogue.text = "On" if enabled else "Off"
+func _update_unlock_button() -> void:
+	var unlocked := ProgressStoreScript.highest_unlocked_stage() == ProgressStoreScript.LAST_STAGE
+	%UnlockAllStagesButton.disabled = unlocked
+	%UnlockAllStagesButton.text = "해금 완료" if unlocked else "해금"
+
+
+func _stage_buttons() -> Array[BaseButton]:
+	var buttons: Array[BaseButton] = []
+	for card in $StageScreen/StageLayout/CardsSlot/Cards.get_children():
+		buttons.append(card.get_child(card.get_child_count() - 1))
+	return buttons
 
 
 func _sync_audio_toggle(toggle: Button, enabled: bool) -> void:
@@ -696,7 +702,7 @@ func _hide_overlay() -> void:
 
 func _show_stage_select() -> void:
 	_refresh_stage_cards()
-	var stage_buttons: Array[BaseButton] = [%StageOneButton, %StageTwoButton, %StageThreeButton, %StageFourButton]
+	var stage_buttons := _stage_buttons()
 	var selected_index := ProgressStoreScript.last_played_stage() - 1
 	_transition_to(stage_screen, $StageScreen/StageLayout/SmallLogo, %StageTitle, $StageScreen/StageLayout/CardsSlot/Cards, %BackButton, stage_buttons[selected_index])
 

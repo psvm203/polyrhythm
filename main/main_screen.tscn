@@ -606,29 +606,31 @@ layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="Cards" type="HBoxContainer" parent="StageScreen/StageLayout/CardsSlot" unique_id=295942914]
+[node name="Cards" type="GridContainer" parent="StageScreen/StageLayout/CardsSlot" unique_id=295942914]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 18
+columns = 4
+theme_override_constants/h_separation = 18
+theme_override_constants/v_separation = 14
 
 [node name="StageOne" type="PanelContainer" parent="StageScreen/StageLayout/CardsSlot/Cards" unique_id=251408904]
-custom_minimum_size = Vector2(260, 510)
+custom_minimum_size = Vector2(260, 300)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleStageActive")
 
 [node name="Items" type="VBoxContainer" parent="StageScreen/StageLayout/CardsSlot/Cards/StageOne" unique_id=1363487885]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 
 [node name="Stage" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageOne/Items" unique_id=1427580488]
-custom_minimum_size = Vector2(0, 58)
+custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.08, 0.9, 0.95, 1)
-theme_override_font_sizes/font_size = 23
+theme_override_font_sizes/font_size = 16
 text = "STAGE"
 horizontal_alignment = 1
 vertical_alignment = 2
@@ -636,12 +638,12 @@ vertical_alignment = 2
 [node name="Number" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageOne/Items" unique_id=1540034440]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.08, 0.9, 0.95, 1)
-theme_override_font_sizes/font_size = 56
+theme_override_font_sizes/font_size = 32
 text = "01"
 horizontal_alignment = 1
 
 [node name="Record" type="Control" parent="StageScreen/StageLayout/CardsSlot/Cards/StageOne/Items" unique_id=962346920]
-custom_minimum_size = Vector2(0, 270)
+custom_minimum_size = Vector2(0, 144)
 layout_mode = 2
 script = ExtResource("3_record")
 active = true
@@ -650,7 +652,7 @@ active = true
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/font_color = Color(0.95, 0.96, 1, 1)
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 18
 text = "Rhythm Start"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -658,7 +660,7 @@ vertical_alignment = 1
 [node name="Rating" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageOne/Items" unique_id=968012574]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.32, 0.39, 0.48, 1)
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 20
 text = "☆☆☆"
 horizontal_alignment = 1
 
@@ -678,19 +680,19 @@ theme_override_styles/focus = SubResource("StyleEmpty")
 flat = true
 
 [node name="StageTwo" type="PanelContainer" parent="StageScreen/StageLayout/CardsSlot/Cards" unique_id=1931705652]
-custom_minimum_size = Vector2(260, 510)
+custom_minimum_size = Vector2(260, 300)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleStageLocked")
 
 [node name="Items" type="VBoxContainer" parent="StageScreen/StageLayout/CardsSlot/Cards/StageTwo" unique_id=2090164339]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 
 [node name="Stage" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageTwo/Items" unique_id=1411882413]
-custom_minimum_size = Vector2(0, 58)
+custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.48, 0.48, 0.48, 1)
-theme_override_font_sizes/font_size = 23
+theme_override_font_sizes/font_size = 16
 text = "STAGE"
 horizontal_alignment = 1
 vertical_alignment = 2
@@ -698,12 +700,12 @@ vertical_alignment = 2
 [node name="Number" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageTwo/Items" unique_id=1201387616]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.52, 0.52, 0.52, 1)
-theme_override_font_sizes/font_size = 56
+theme_override_font_sizes/font_size = 32
 text = "02"
 horizontal_alignment = 1
 
 [node name="Record" type="Control" parent="StageScreen/StageLayout/CardsSlot/Cards/StageTwo/Items" unique_id=675262395]
-custom_minimum_size = Vector2(0, 270)
+custom_minimum_size = Vector2(0, 144)
 layout_mode = 2
 script = ExtResource("3_record")
 
@@ -711,7 +713,7 @@ script = ExtResource("3_record")
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/font_color = Color(0.57, 0.57, 0.57, 1)
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 18
 text = "Beat Flow"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -719,7 +721,7 @@ vertical_alignment = 1
 [node name="Rating" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageTwo/Items" unique_id=944184770]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.32, 0.39, 0.48, 1)
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 20
 text = "☆☆☆"
 horizontal_alignment = 1
 
@@ -739,19 +741,19 @@ theme_override_styles/focus = SubResource("StyleEmpty")
 flat = true
 
 [node name="StageThree" type="PanelContainer" parent="StageScreen/StageLayout/CardsSlot/Cards" unique_id=1981573200]
-custom_minimum_size = Vector2(260, 510)
+custom_minimum_size = Vector2(260, 300)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleStageLocked")
 
 [node name="Items" type="VBoxContainer" parent="StageScreen/StageLayout/CardsSlot/Cards/StageThree" unique_id=1230870878]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 
 [node name="Stage" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageThree/Items" unique_id=448753442]
-custom_minimum_size = Vector2(0, 58)
+custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.48, 0.48, 0.48, 1)
-theme_override_font_sizes/font_size = 23
+theme_override_font_sizes/font_size = 16
 text = "STAGE"
 horizontal_alignment = 1
 vertical_alignment = 2
@@ -759,12 +761,12 @@ vertical_alignment = 2
 [node name="Number" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageThree/Items" unique_id=238663832]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.52, 0.52, 0.52, 1)
-theme_override_font_sizes/font_size = 56
+theme_override_font_sizes/font_size = 32
 text = "03"
 horizontal_alignment = 1
 
 [node name="Record" type="Control" parent="StageScreen/StageLayout/CardsSlot/Cards/StageThree/Items" unique_id=1286282505]
-custom_minimum_size = Vector2(0, 270)
+custom_minimum_size = Vector2(0, 144)
 layout_mode = 2
 script = ExtResource("3_record")
 
@@ -772,7 +774,7 @@ script = ExtResource("3_record")
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/font_color = Color(0.57, 0.57, 0.57, 1)
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 18
 text = "Shape Samurai"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -780,7 +782,7 @@ vertical_alignment = 1
 [node name="Rating" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageThree/Items" unique_id=1239537934]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.32, 0.39, 0.48, 1)
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 20
 text = "☆☆☆"
 horizontal_alignment = 1
 
@@ -800,19 +802,19 @@ theme_override_styles/focus = SubResource("StyleEmpty")
 flat = true
 
 [node name="StageFour" type="PanelContainer" parent="StageScreen/StageLayout/CardsSlot/Cards" unique_id=522346197]
-custom_minimum_size = Vector2(260, 510)
+custom_minimum_size = Vector2(260, 300)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleStageLocked")
 
 [node name="Items" type="VBoxContainer" parent="StageScreen/StageLayout/CardsSlot/Cards/StageFour" unique_id=480724057]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 
 [node name="Stage" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageFour/Items" unique_id=1765786028]
-custom_minimum_size = Vector2(0, 58)
+custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.48, 0.48, 0.48, 1)
-theme_override_font_sizes/font_size = 23
+theme_override_font_sizes/font_size = 16
 text = "STAGE"
 horizontal_alignment = 1
 vertical_alignment = 2
@@ -820,12 +822,12 @@ vertical_alignment = 2
 [node name="Number" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageFour/Items" unique_id=353806403]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.52, 0.52, 0.52, 1)
-theme_override_font_sizes/font_size = 56
+theme_override_font_sizes/font_size = 32
 text = "04"
 horizontal_alignment = 1
 
 [node name="Record" type="Control" parent="StageScreen/StageLayout/CardsSlot/Cards/StageFour/Items" unique_id=969016859]
-custom_minimum_size = Vector2(0, 270)
+custom_minimum_size = Vector2(0, 144)
 layout_mode = 2
 script = ExtResource("3_record")
 
@@ -833,7 +835,7 @@ script = ExtResource("3_record")
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/font_color = Color(0.57, 0.57, 0.57, 1)
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 18
 text = "Time Rift"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -841,7 +843,7 @@ vertical_alignment = 1
 [node name="Rating" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageFour/Items" unique_id=932305160]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.32, 0.39, 0.48, 1)
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 20
 text = "☆☆☆"
 horizontal_alignment = 1
 
@@ -857,6 +859,242 @@ unique_name_in_owner = true
 layout_mode = 2
 focus_neighbor_left = NodePath("../../StageThree/StageThreeButton")
 focus_neighbor_right = NodePath("../../StageOne/StageOneButton")
+theme_override_styles/focus = SubResource("StyleEmpty")
+flat = true
+
+[node name="StageFive" type="PanelContainer" parent="StageScreen/StageLayout/CardsSlot/Cards"]
+custom_minimum_size = Vector2(260, 300)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleStageLocked")
+
+[node name="Items" type="VBoxContainer" parent="StageScreen/StageLayout/CardsSlot/Cards/StageFive"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Stage" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageFive/Items"]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48, 0.48, 0.48, 1)
+theme_override_font_sizes/font_size = 16
+text = "STAGE"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Number" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageFive/Items"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.52, 0.52, 0.52, 1)
+theme_override_font_sizes/font_size = 32
+text = "05"
+horizontal_alignment = 1
+
+[node name="Record" type="Control" parent="StageScreen/StageLayout/CardsSlot/Cards/StageFive/Items"]
+custom_minimum_size = Vector2(0, 144)
+layout_mode = 2
+script = ExtResource("3_record")
+
+[node name="Name" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageFive/Items"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.57, 0.57, 0.57, 1)
+theme_override_font_sizes/font_size = 18
+text = "Time Rift"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Rating" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageFive/Items"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.32, 0.39, 0.48, 1)
+theme_override_font_sizes/font_size = 20
+text = "☆☆☆"
+horizontal_alignment = 1
+
+[node name="Best" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageFive/Items"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58, 0.72, 0.9, 1)
+theme_override_font_sizes/font_size = 15
+text = "기록 없음"
+horizontal_alignment = 1
+
+[node name="StageFiveButton" type="Button" parent="StageScreen/StageLayout/CardsSlot/Cards/StageFive"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleEmpty")
+flat = true
+
+[node name="StageSix" type="PanelContainer" parent="StageScreen/StageLayout/CardsSlot/Cards"]
+custom_minimum_size = Vector2(260, 300)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleStageLocked")
+
+[node name="Items" type="VBoxContainer" parent="StageScreen/StageLayout/CardsSlot/Cards/StageSix"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Stage" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageSix/Items"]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48, 0.48, 0.48, 1)
+theme_override_font_sizes/font_size = 16
+text = "STAGE"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Number" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageSix/Items"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.52, 0.52, 0.52, 1)
+theme_override_font_sizes/font_size = 32
+text = "06"
+horizontal_alignment = 1
+
+[node name="Record" type="Control" parent="StageScreen/StageLayout/CardsSlot/Cards/StageSix/Items"]
+custom_minimum_size = Vector2(0, 144)
+layout_mode = 2
+script = ExtResource("3_record")
+
+[node name="Name" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageSix/Items"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.57, 0.57, 0.57, 1)
+theme_override_font_sizes/font_size = 18
+text = "Time Rift"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Rating" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageSix/Items"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.32, 0.39, 0.48, 1)
+theme_override_font_sizes/font_size = 20
+text = "☆☆☆"
+horizontal_alignment = 1
+
+[node name="Best" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageSix/Items"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58, 0.72, 0.9, 1)
+theme_override_font_sizes/font_size = 15
+text = "기록 없음"
+horizontal_alignment = 1
+
+[node name="StageSixButton" type="Button" parent="StageScreen/StageLayout/CardsSlot/Cards/StageSix"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleEmpty")
+flat = true
+
+[node name="StageSeven" type="PanelContainer" parent="StageScreen/StageLayout/CardsSlot/Cards"]
+custom_minimum_size = Vector2(260, 300)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleStageLocked")
+
+[node name="Items" type="VBoxContainer" parent="StageScreen/StageLayout/CardsSlot/Cards/StageSeven"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Stage" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageSeven/Items"]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48, 0.48, 0.48, 1)
+theme_override_font_sizes/font_size = 16
+text = "STAGE"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Number" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageSeven/Items"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.52, 0.52, 0.52, 1)
+theme_override_font_sizes/font_size = 32
+text = "07"
+horizontal_alignment = 1
+
+[node name="Record" type="Control" parent="StageScreen/StageLayout/CardsSlot/Cards/StageSeven/Items"]
+custom_minimum_size = Vector2(0, 144)
+layout_mode = 2
+script = ExtResource("3_record")
+
+[node name="Name" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageSeven/Items"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.57, 0.57, 0.57, 1)
+theme_override_font_sizes/font_size = 18
+text = "Time Rift"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Rating" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageSeven/Items"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.32, 0.39, 0.48, 1)
+theme_override_font_sizes/font_size = 20
+text = "☆☆☆"
+horizontal_alignment = 1
+
+[node name="Best" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageSeven/Items"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58, 0.72, 0.9, 1)
+theme_override_font_sizes/font_size = 15
+text = "기록 없음"
+horizontal_alignment = 1
+
+[node name="StageSevenButton" type="Button" parent="StageScreen/StageLayout/CardsSlot/Cards/StageSeven"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleEmpty")
+flat = true
+
+[node name="StageEight" type="PanelContainer" parent="StageScreen/StageLayout/CardsSlot/Cards"]
+custom_minimum_size = Vector2(260, 300)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleStageLocked")
+
+[node name="Items" type="VBoxContainer" parent="StageScreen/StageLayout/CardsSlot/Cards/StageEight"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Stage" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageEight/Items"]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48, 0.48, 0.48, 1)
+theme_override_font_sizes/font_size = 16
+text = "STAGE"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Number" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageEight/Items"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.52, 0.52, 0.52, 1)
+theme_override_font_sizes/font_size = 32
+text = "08"
+horizontal_alignment = 1
+
+[node name="Record" type="Control" parent="StageScreen/StageLayout/CardsSlot/Cards/StageEight/Items"]
+custom_minimum_size = Vector2(0, 144)
+layout_mode = 2
+script = ExtResource("3_record")
+
+[node name="Name" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageEight/Items"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.57, 0.57, 0.57, 1)
+theme_override_font_sizes/font_size = 18
+text = "Time Rift"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Rating" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageEight/Items"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.32, 0.39, 0.48, 1)
+theme_override_font_sizes/font_size = 20
+text = "☆☆☆"
+horizontal_alignment = 1
+
+[node name="Best" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageEight/Items"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58, 0.72, 0.9, 1)
+theme_override_font_sizes/font_size = 15
+text = "기록 없음"
+horizontal_alignment = 1
+
+[node name="StageEightButton" type="Button" parent="StageScreen/StageLayout/CardsSlot/Cards/StageEight"]
+unique_name_in_owner = true
+layout_mode = 2
 theme_override_styles/focus = SubResource("StyleEmpty")
 flat = true
 
@@ -1335,12 +1573,11 @@ text = "보정"
 modulate = Color(0.4, 0.5, 0.75, 0.25)
 layout_mode = 2
 
-[node name="Dialogue" type="HBoxContainer" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows" unique_id=1531721541]
-visible = false
+[node name="StageUnlock" type="HBoxContainer" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows" unique_id=1531721541]
 custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
 
-[node name="Icon" type="Label" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/Dialogue" unique_id=803281460]
+[node name="Icon" type="Label" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/StageUnlock" unique_id=803281460]
 custom_minimum_size = Vector2(92, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.35, 0.75, 0.95, 1)
@@ -1349,15 +1586,15 @@ text = "▱"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Label" type="Label" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/Dialogue" unique_id=67983011]
+[node name="Label" type="Label" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/StageUnlock" unique_id=67983011]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.92, 0.94, 1, 1)
 theme_override_font_sizes/font_size = 22
-text = "이미 본 대화 건너뛰기"
+text = "모든 스테이지 해금"
 vertical_alignment = 1
 
-[node name="SkipSeenDialogue" type="Button" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/Dialogue" unique_id=574334332]
+[node name="UnlockAllStagesButton" type="Button" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/StageUnlock" unique_id=574334332]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(116, 54)
 layout_mode = 2
@@ -1367,8 +1604,7 @@ theme_override_styles/normal = SubResource("StyleButtonNormal")
 theme_override_styles/pressed = SubResource("StyleButtonPressed")
 theme_override_styles/hover = SubResource("StyleButtonHover")
 theme_override_styles/focus = SubResource("StyleButtonHover")
-toggle_mode = true
-text = "Off"
+text = "해금"
 
 [node name="TransitionLogo" type="HBoxContainer" parent="." unique_id=2085095181]
 unique_name_in_owner = true

@@ -124,6 +124,7 @@ func _ready() -> void:
 		conductor.early_window_sec,
 		conductor.late_window_sec,
 		conductor.judgment_offset_sec,
+		level_data.note_times_sec,
 	)
 	conductor.setup(_note_timeline.contact_times())
 	conductor.set_audio_reference(music, level_data.music_start_offset_sec)
@@ -283,7 +284,10 @@ func _on_countdown_finished() -> void:
 
 func _process(_delta: float) -> void:
 	if not _level_ended and level_data.duration_sec > 0.0 and conductor._get_game_time() >= level_data.duration_sec:
-		_finish_level(_boss_health <= 0)
+		# Resolve deadlines before deciding success, including a stalled final frame.
+		conductor._process(0.0)
+		if not _level_ended and not conductor.paused:
+			_finish_level(_boss_health <= 0 and _run_state.resolved_notes >= _run_state.total_notes)
 	queue_redraw()
 
 

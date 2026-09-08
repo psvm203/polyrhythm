@@ -10,7 +10,7 @@ func _init() -> void:
 	_expect(ProgressStoreScript.next_unlocked_stage(2, 2) == 3, "stage two unlocks stage three")
 	_expect(ProgressStoreScript.next_unlocked_stage(3, 3) == 4, "stage three unlocks stage four")
 	_expect(ProgressStoreScript.next_unlocked_stage(1, 4) == 4, "replay does not reduce progress")
-	_expect(ProgressStoreScript.next_unlocked_stage(4, 4) == 4, "last stage stays capped")
+	_expect(ProgressStoreScript.next_unlocked_stage(8, 8) == 8, "last stage stays capped")
 	var empty_record := ProgressStoreScript.stage_record(ProgressStoreScript.LAST_STAGE)
 	_expect(empty_record.has_all(["score", "rank", "accuracy", "max_combo", "average_offset_ms", "mean_absolute_error_ms", "early_inputs", "cleared"]), "stage record has a stable shape")
 	_expect(ProgressStoreScript.is_better_record(1000, true, 900), "higher completed score updates record")

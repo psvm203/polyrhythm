@@ -7,13 +7,15 @@ const UNLOCKED_KEY := "highest_unlocked_stage"
 const PENDING_DIALOGUE_KEY := "pending_unlock_dialogue"
 const LAST_PLAYED_STAGE_KEY := "last_played_stage"
 const SEEN_DIALOGUE_SECTION := "seen_dialogue"
-const LAST_STAGE := 4
+const LAST_STAGE := 8
 
 static var selected_stage := 1
 static var show_stage_select_on_load := false
 static var custom_level_path := ""
 static var editor_working_file_path := ""
 static var editor_saved_signature := ""
+# Tests can isolate persistence without touching the player's records.
+static var save_path := SAVE_PATH
 
 
 static func highest_unlocked_stage() -> int:
@@ -57,6 +59,13 @@ static func unlock_next_stage(cleared_stage: int) -> int:
 	config.set_value(SECTION, PENDING_DIALOGUE_KEY, unlocked)
 	_save(config)
 	return unlocked
+
+
+static func unlock_all_stages() -> Error:
+	var config := _load()
+	config.set_value(SECTION, UNLOCKED_KEY, LAST_STAGE)
+	config.set_value(SECTION, PENDING_DIALOGUE_KEY, 0)
+	return _save(config)
 
 
 static func next_unlocked_stage(cleared_stage: int, highest_unlocked: int) -> int:
@@ -124,11 +133,12 @@ static func star_rating(accuracy: float, completed: bool = true) -> Dictionary:
 
 static func _load() -> ConfigFile:
 	var config := ConfigFile.new()
-	config.load(SAVE_PATH)
+	config.load(save_path)
 	return config
 
 
-static func _save(config: ConfigFile) -> void:
-	var error := config.save(SAVE_PATH)
+static func _save(config: ConfigFile) -> Error:
+	var error := config.save(save_path)
 	if error != OK:
 		push_error("Failed to save progress: %s" % error_string(error))
+	return error

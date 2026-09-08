@@ -27,6 +27,10 @@ func _init() -> void:
 	first["contact_sec"] = 99.0
 	_expect_approx(timeline.entry(0)["contact_sec"], 3.0, "entries are returned as immutable copies")
 	_expect(timeline.entry(-1).is_empty(), "invalid index is safe")
+	var chart = NoteTimelineScript.build([6, 3], 121.9, 0.025, 0.050, 0.100, 0.010, PackedFloat32Array([0.97, 1.46]))
+	_expect_approx(chart.entry(0)["contact_sec"], 0.97, "hexagon lands on explicit audio onset")
+	_expect_approx(chart.entry(1)["duration_sec"], 0.49, "next polygon uses the gap between audio onsets")
+	_expect_approx(chart.entry(1)["judgment_sec"], 1.47, "calibration offset applies to audio-timed notes")
 	_finish()
 
 

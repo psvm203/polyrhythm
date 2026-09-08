@@ -102,16 +102,17 @@ func _set_map_mode(enabled: bool) -> void:
 
 
 func _collect() -> Dictionary:
-	_document.replace({
+	var data: Dictionary = _document.snapshot()
+	data.merge({
 		"sides_sequence": %Timeline.sequence.duplicate(),
 		"repeat_count": 1,
 		"bpm": %Bpm.value,
 		"music_path": %MusicPath.text.strip_edges(),
 		"music_start_offset_sec": %MusicOffset.value,
-		"boss_name": "",
 		"boss_health": _boss_health,
 		"events": _events.duplicate(true),
-	})
+	}, true)
+	_document.replace(data)
 	return _document.snapshot()
 
 

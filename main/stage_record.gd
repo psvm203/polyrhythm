@@ -1,6 +1,6 @@
 extends Control
 
-const LOCK_OFFSET_Y := 100.0
+const LOCK_OFFSET_Y := 32.0
 
 @export var active := false
 

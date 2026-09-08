@@ -9,6 +9,10 @@ const STAGES := [
 	"res://level/data/level_2.yaml",
 	"res://level/data/level_3.yaml",
 	"res://level/data/level_4.yaml",
+	"res://level/data/level_5.yaml",
+	"res://level/data/level_6.yaml",
+	"res://level/data/level_7.yaml",
+	"res://level/data/level_8.yaml",
 ]
 
 var _assertions := 0
@@ -30,16 +34,16 @@ func _test_stage(stage_number: int, path: String) -> void:
 	var events = EventSystemScript.new()
 	events.setup(data.events)
 	var transformed: Array[int] = events.transform_sequence(original)
-	var timeline = TimelineScript.build(transformed, data.bpm, 0.025, 0.050, 0.100, 0.0)
+	var timeline = TimelineScript.build(transformed, data.bpm, 0.025, 0.050, 0.100, 0.0, data.note_times_sec)
 	_expect(timeline.size() == transformed.size(), "stage %d timeline preserves transformed note count" % stage_number)
 	var legacy_cursor := 0.0
 	for index in transformed.size():
-		legacy_cursor += float(transformed[index]) * 120.0 / data.bpm
+		legacy_cursor = data.note_times_sec[index]
 		var entry: Dictionary = timeline.entry(index)
-		_expect_approx(entry["contact_sec"], legacy_cursor, "stage %d note %d contact matches legacy formula" % [stage_number, index + 1])
+		_expect_approx(entry["contact_sec"], legacy_cursor, "stage %d note %d contact matches audio onset" % [stage_number, index + 1])
 		_expect_approx(entry["judgment_sec"], legacy_cursor, "stage %d note %d center matches visible contact" % [stage_number, index + 1])
 		_expect(float(entry["miss_after_sec"]) > float(entry["perfect_end_sec"]), "stage %d note %d windows remain ordered" % [stage_number, index + 1])
-	_expect_approx(timeline.duration_sec(), legacy_cursor, "stage %d total duration is unchanged" % stage_number)
+	_expect_approx(timeline.duration_sec(), legacy_cursor, "stage %d timeline ends on its last audio onset" % stage_number)
 	if stage_number == 3:
 		_expect(transformed.size() >= original.size(), "samurai replacements never drop notes")
 		_expect(transformed.count(3) > original.count(3), "samurai split produces triangle beats")
