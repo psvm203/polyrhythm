@@ -19,13 +19,18 @@ func _run() -> void:
 		level.countdown.countdown_finished.disconnect(level._on_countdown_finished)
 	level.dialogue_overlay.hide()
 	level.rotator.restart_current_transition()
+	var now := [1_000_000]
+	level.conductor.time_source_usec = func() -> int: return now[0]
+	level.conductor.judgment_offset_sec = 0.0
 	level._on_countdown_finished()
-	await create_timer(0.25).timeout
+	now[0] += 250_000
 	var input := InputEventKey.new()
 	input.physical_keycode = KEY_SPACE
 	input.pressed = true
 	level.conductor._unhandled_input(input)
-	await create_timer(2.25).timeout
+	# Six misses exhaust the starting gauge; derive the deadline from this stage.
+	now[0] = 1_000_000 + roundi((level.conductor.scheduled_judgment_times[5] + 0.2) * 1_000_000)
+	level.conductor._process(0.0)
 	_expect(level.conductor.paused, "gameplay clock pauses on result")
 	_expect(level.conductor.game_time > 0.5, "gameplay clock advances before result")
 	_expect(not level.music.playing, "level music stops when result opens")

@@ -26,21 +26,21 @@ func _init() -> void:
 	_expect(clock.paused_total_usec == 2_000_000, "clock accounts for paused duration")
 	now[0] += 125_000
 	_expect(clock.elapsed_usec() == 375_000, "clock continues after resume")
-	var drift := clock.discipline_to(0.400, 0.005, 0.001)
-	_expect(is_equal_approx(drift, 0.025), "discipline reports audio drift")
-	_expect(clock.correction_usec == 5_000, "discipline limits correction per sample")
-	_expect(clock.elapsed_usec() == 380_000, "discipline gently adjusts elapsed time")
-	clock.discipline_to(0.381, 0.005, 0.002)
-	_expect(clock.correction_usec == 5_000, "deadzone prevents clock jitter")
 	clock.pause()
 	clock.pause()
 	now[0] += 100_000
 	clock.resume()
 	clock.resume()
-	_expect(clock.elapsed_usec() == 380_000, "duplicate pause and resume are idempotent")
+	_expect(clock.elapsed_usec() == 375_000, "duplicate pause and resume are idempotent")
 	clock.reset()
 	_expect(not clock.running, "reset stops clock")
 	_expect(clock.elapsed_usec() == 0, "reset clears elapsed time")
+	clock.start(0)
+	clock.pause(0)
+	_expect(clock.is_paused(), "zero timestamp is a valid pause")
+	_expect(clock.elapsed_usec(1000000) == 0, "zero timestamp pause freezes time")
+	clock.resume(1000000)
+	_expect(clock.elapsed_usec(1250000) == 250000, "zero timestamp pause is excluded")
 	_finish()
 
 

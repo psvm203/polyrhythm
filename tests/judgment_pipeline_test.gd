@@ -36,6 +36,10 @@ func _init() -> void:
 	pipeline.configure(0.025, 0.050, 0.100)
 	_expect(pipeline.overdue_count(PackedFloat32Array([1.0, 2.0, 3.0]), 0, 2.5) == 2, "long frame catches every overdue note")
 	_expect(pipeline.overdue_count(PackedFloat32Array([1.0, 2.0, 3.0]), 2, 2.5) == 0, "catch-up respects current note")
+	var negative_offset: Dictionary = pipeline.evaluate(0.9, 0.9, 1.0)
+	_expect(negative_offset["defer_until_contact"], "negative offset exact hit waits for visual contact")
+	var positive_offset: Dictionary = pipeline.evaluate(1.08, 1.1, 1.0)
+	_expect(not positive_offset["defer_until_contact"], "positive offset early hit after contact displays immediately")
 	_finish()
 
 

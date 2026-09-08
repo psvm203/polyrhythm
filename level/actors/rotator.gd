@@ -18,6 +18,7 @@ var angular_speed: float = 0.0
 var completed: bool = false
 var last_index: int = -1
 var paused: bool = true
+var clock_driven: bool = false
 var _transition_time: float = 0.0
 var current_offset: Vector2 = Vector2.ZERO
 var _start_offset: Vector2 = Vector2.ZERO
@@ -263,23 +264,23 @@ func _compute_rotated_current() -> void:
 		rotated_current.append(world_center + local.rotated(angle))
 
 
-func _process(delta: float) -> void:
-	if completed or polygons.is_empty():
-		return
-	if paused:
-		_compute_rotated_current()
-		queue_redraw()
-		return
-	_transition_time += delta
-	if not is_fly_in_complete():
-		var t: float = clampf(_transition_time / transition_duration, 0.0, 1.0)
-		current_offset = _start_offset.lerp(Vector2.ZERO, t)
-		# Rotate one full revolution during fly-in; arrive exactly when rotation completes
-		angle = t * TAU
-		_compute_rotated_current()
-		queue_redraw()
-		return
-	current_offset = Vector2.ZERO
-	angle = 0.0
+# Gameplay supplies absolute time. Standalone previews can still use frame deltas.
+func sample_timeline(game_time: float, start_time: float, contact_time: float) -> void:
+	transition_duration = maxf(contact_time - start_time, 0.000001)
+	angular_speed = TAU / transition_duration
+	_sample_elapsed(maxf(game_time - start_time, 0.0))
+
+
+func _sample_elapsed(elapsed: float) -> void:
+	_transition_time = elapsed
+	var progress := get_transition_progress()
+	current_offset = _start_offset.lerp(Vector2.ZERO, progress)
+	angle = progress * TAU if progress < 1.0 else 0.0
 	_compute_rotated_current()
 	queue_redraw()
+
+
+func _process(delta: float) -> void:
+	if completed or polygons.is_empty() or paused or clock_driven:
+		return
+	_sample_elapsed(_transition_time + delta)

@@ -14,16 +14,17 @@ func configure(perfect: float, early: float, late: float) -> void:
 	late_window_sec = maxf(late, perfect_window_sec)
 
 
-func evaluate(input_time_sec: float, center_time_sec: float) -> Dictionary:
+func evaluate(input_time_sec: float, center_time_sec: float, visual_contact_sec: float = NAN) -> Dictionary:
 	var delta := input_time_sec - center_time_sec
 	var result := classify_delta(delta)
+	var contact := center_time_sec if is_nan(visual_contact_sec) else visual_contact_sec
 	return {
 		"input_time_sec": input_time_sec,
 		"center_time_sec": center_time_sec,
 		"delta_sec": delta,
 		"delta_ms": delta * 1000.0,
 		"result": result,
-		"defer_until_contact": should_defer(delta, result),
+		"defer_until_contact": should_defer(input_time_sec - contact, result),
 		"advance_note": result != "Too Fast",
 	}
 

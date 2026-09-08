@@ -61,7 +61,6 @@ var _starter_triangle: PackedVector2Array = PackedVector2Array()
 var _polygon_centers: PackedVector2Array = PackedVector2Array()
 var _sides_counts: PackedInt32Array = PackedInt32Array()
 var _current_index: int = 0
-var _current_started_at: float = 0.0
 var _tutorial_preview_active: bool = false
 var _run_state: RunState = RunStateScript.new()
 var _level_ended: bool = false
@@ -168,7 +167,6 @@ func _start_countdown() -> void:
 	if _tutorial_preview_active:
 		_tutorial_preview_active = false
 		rotator.restart_current_transition()
-		_current_started_at = Time.get_ticks_msec() / 1000.0
 	if countdown != null:
 		countdown.play()
 
@@ -273,13 +271,14 @@ func _return_to_editor() -> void:
 
 
 func _on_countdown_finished() -> void:
-	_current_started_at = Time.get_ticks_msec() / 1000.0
 	rotator.paused = false
 	set_process(true)
 	conductor.start()
 	if music != null:
 		var stream_length := music.stream.get_length() if music.stream != null else 0.0
-		music.play(level_data.clamped_music_start_offset(stream_length))
+		var start_offset := level_data.clamped_music_start_offset(stream_length)
+		conductor.set_audio_reference(music, start_offset)
+		music.play(start_offset)
 
 
 func _process(_delta: float) -> void:
@@ -310,8 +309,8 @@ func _set_game_paused(value: bool) -> void:
 	else:
 		get_tree().paused = false
 		pause_overlay.close()
-		music.stream_paused = false
 		conductor.resume_clock()
+		music.stream_paused = conductor.paused
 		set_process(true)
 
 
@@ -329,7 +328,6 @@ func _set_judgment_offset(offset_sec: float) -> void:
 
 func _on_polygon_advanced(_from_index: int, to_index: int) -> void:
 	_current_index = to_index
-	_current_started_at = Time.get_ticks_msec() / 1000.0
 	queue_redraw()
 	if _event_system.has_event(EVENT_SAMURAI):
 		gameplay_hud.update_samurai_attack(_boss_health, _event_system.occurs(EVENT_SAMURAI, to_index))
@@ -339,15 +337,14 @@ func _on_polygon_advanced(_from_index: int, to_index: int) -> void:
 	elif _event_system.has_event(EVENT_TIME_STOP):
 		gameplay_hud.update_time_spell(_boss_health, _event_system.occurs(EVENT_TIME_STOP, to_index), false)
 		if _event_system.occurs(EVENT_TIME_STOP, to_index):
-			_trigger_time_stop.call_deferred()
+			_trigger_time_stop()
 
 
 func _trigger_time_stop() -> void:
 	if _time_stopped or _level_ended:
 		return
 	_time_stopped = true
-	conductor.pause_clock()
-	rotator.paused = true
+	conductor.pause_clock(&"boss_time_stop")
 	music.stream_paused = true
 	gameplay_hud.update_time_spell(_boss_health, true, true)
 	var configured_duration: Variant = _event_system.value(EVENT_TIME_STOP, "duration_sec", 0.65)
@@ -362,12 +359,8 @@ func _trigger_time_stop() -> void:
 	if _level_ended:
 		return
 	gameplay_hud.update_time_spell(_boss_health, true, false)
-	if get_tree().paused:
-		_time_stopped = false
-		return
-	music.stream_paused = false
-	rotator.paused = false
-	conductor.resume_clock()
+	conductor.resume_clock(&"boss_time_stop")
+	music.stream_paused = conductor.paused
 	_time_stopped = false
 
 
@@ -414,7 +407,7 @@ func _draw_shared_entrance_edge(index: int) -> void:
 	var edge: PackedVector2Array = rotator.get_rotated_entrance_edge_world()
 	if edge.size() < 2:
 		return
-	var elapsed: float = Time.get_ticks_msec() / 1000.0 - _current_started_at
+	var elapsed: float = rotator.get_transition_elapsed()
 	var spawn_t := clampf(elapsed / maxf(spawn_fade_duration, 0.0001), 0.0, 1.0)
 	var spawn_alpha := 1.0 - pow(1.0 - spawn_t, 3.0)
 	var pulse_strength := _landing_pulse_strength(elapsed, rotator.transition_duration)
@@ -434,7 +427,7 @@ func _draw_current_polygon(index: int) -> void:
 	var rotated: PackedVector2Array = rotator.get_rotated_polygon()
 	if rotated.is_empty():
 		return
-	var elapsed: float = Time.get_ticks_msec() / 1000.0 - _current_started_at
+	var elapsed: float = rotator.get_transition_elapsed()
 	var spawn_t: float = clampf(elapsed / maxf(spawn_fade_duration, 0.0001), 0.0, 1.0)
 	var spawn_alpha: float = 1.0 - pow(1.0 - spawn_t, 3.0)
 	# A restrained sheen marks visual landing without obscuring the polygon shape.
