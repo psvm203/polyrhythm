@@ -41,11 +41,44 @@ func _run() -> void:
 	_expect(FileAccess.file_exists(trace_path), "failed run persists its timing trace")
 	DirAccess.remove_absolute(trace_path)
 	level.queue_free()
+	# A successful Stage 1 keeps playing through the tail, then ends at 55s.
+	var timed_level = LevelScene.instantiate()
+	timed_level.timing_trace_path = trace_path
+	get_root().add_child(timed_level)
+	timed_level.countdown.countdown_finished.disconnect(timed_level._on_countdown_finished)
+	timed_level.dialogue_overlay.hide()
+	timed_level.rotator.restart_current_transition()
+	now[0] = 1_000_000
+	timed_level.conductor.time_source_usec = func() -> int: return now[0]
+	timed_level.conductor.judgment_offset_sec = 0.0
+	timed_level.conductor.detailed_timing_logs = false
+	timed_level._on_countdown_finished()
+	_expect(timed_level.level_data.duration_sec == 55.0, "stage one has a 55-second duration")
+	for contact in timed_level.conductor.scheduled_judgment_times:
+		_expect(contact < 55.0, "stage one has no notes beyond the cutoff")
+		now[0] = 1_000_000 + roundi(contact * 1_000_000)
+		timed_level.conductor._unhandled_input(input)
+	_expect(timed_level._run_state.resolved_notes == timed_level._run_state.total_notes, "all shortened stage notes resolve")
+	_expect(not timed_level._level_ended and timed_level.music.playing, "final note leaves music playing until cutoff")
+	now[0] = 55_999_000
+	timed_level._process(0.0)
+	_expect(not timed_level._level_ended, "stage remains active at 54.999 seconds")
+	timed_level._set_game_paused(true)
+	now[0] += 5_000_000
+	timed_level._set_game_paused(false)
+	timed_level._process(0.0)
+	_expect(not timed_level._level_ended, "pause time does not count toward cutoff")
+	now[0] += 1_000
+	timed_level._process(0.0)
+	_expect(timed_level._level_ended and timed_level.result_overlay.visible, "55 seconds opens the result screen")
+	_expect(not timed_level.music.playing and timed_level.conductor.paused, "55 seconds stops music and gameplay together")
+	DirAccess.remove_absolute(trace_path)
+	timed_level.queue_free()
 	if _failures > 0:
 		push_error("Gameplay runtime tests failed: %d" % _failures)
 		quit(1)
 		return
-	print("Gameplay runtime tests passed: 8 assertions")
+	print("Gameplay runtime tests passed")
 	quit()
 
 

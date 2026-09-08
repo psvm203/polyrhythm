@@ -2,6 +2,8 @@ class_name LevelData
 extends RefCounted
 
 var bpm: float = 120.0
+# Zero ends the stage when all notes resolve.
+var duration_sec: float = 0.0
 var music_path: String = ""
 var music_start_offset_sec: float = 0.0
 var boss_name: String = ""
@@ -16,6 +18,7 @@ static func from_yaml(path: String) -> LevelData:
 	var result := LevelData.new()
 	result._yaml = result._parse_yaml(path)
 	result.bpm = _positive_float(result._yaml.get("bpm", result.bpm), result.bpm)
+	result.duration_sec = maxf(_finite_float(result._yaml.get("duration_sec", 0.0), 0.0), 0.0)
 	result.music_path = str(result._yaml.get("music_path", ""))
 	result.music_start_offset_sec = maxf(_finite_float(result._yaml.get("music_start_offset_sec", 0.0), 0.0), 0.0)
 	result.boss_name = str(result._yaml.get("boss_name", ""))
@@ -139,7 +142,7 @@ static func _append_diagnostic(
 
 
 static func to_yaml(data: Dictionary) -> String:
-	var keys := ["sides_sequence", "repeat_count", "bpm", "music_path", "music_start_offset_sec", "boss_name", "boss_health", "events", "tutorial_speaker", "tutorial_lines"]
+	var keys := ["sides_sequence", "repeat_count", "bpm", "duration_sec", "music_path", "music_start_offset_sec", "boss_name", "boss_health", "events", "tutorial_speaker", "tutorial_lines"]
 	var lines := PackedStringArray(["# Polyrhythm custom level"])
 	for key in keys:
 		if data.has(key):

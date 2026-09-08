@@ -49,7 +49,7 @@ func _init() -> void:
 	indexed_events.transform_sequence([3, 4, 5, 6, 7])
 	_expect(indexed_events.occurs("cue", 1) and indexed_events.occurs("cue", 4), "events can target explicit one-based indices")
 	_expect(ResourceLoader.exists(stage_one.music_path, "AudioStream"), "YAML music path resolves to audio")
-	_expect(stage_one.expanded_sequence().size() == 48, "stage one has a complete introductory arrangement")
+	_expect(stage_one.expanded_sequence().size() == 28, "stage one arrangement ends before its 55-second cutoff")
 	var serialized := LevelDataScript.to_yaml(stage_two.dictionary())
 	_expect("boss_health: 260" in serialized, "YAML export includes boss settings")
 	_expect("tutorial_lines:" in serialized, "YAML export includes story")

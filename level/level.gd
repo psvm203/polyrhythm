@@ -192,7 +192,7 @@ func _on_judged(result: String, polygon_index: int, timing_delta_ms: float) -> v
 		else:
 			gameplay_hud.update_boss(_boss_health, _event_system.occurs(EVENT_GUARD, polygon_index + 1))
 	_run_state.apply_judgment(resolved_result, polygon_index, timing_delta_ms)
-	if not _level_ended and _run_state.resolved_notes >= _run_state.total_notes:
+	if not _level_ended and level_data.duration_sec <= 0.0 and _run_state.resolved_notes >= _run_state.total_notes:
 		_finish_level(_boss_health <= 0)
 
 
@@ -282,6 +282,8 @@ func _on_countdown_finished() -> void:
 
 
 func _process(_delta: float) -> void:
+	if not _level_ended and level_data.duration_sec > 0.0 and conductor._get_game_time() >= level_data.duration_sec:
+		_finish_level(_boss_health <= 0)
 	queue_redraw()
 
 

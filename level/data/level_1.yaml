@@ -1,6 +1,7 @@
 # Polygon placement for Stage 1
-sides_sequence: [3, 3, 4, 3, 4, 5, 4, 3, 5, 4, 6, 3]
-repeat_count: 4
+sides_sequence: [3, 3, 4, 3, 4, 5, 4, 3, 5, 4, 6, 3, 3, 3, 4, 3, 4, 5, 4, 3, 5, 4, 6, 3, 3, 3, 4, 3]
+repeat_count: 1
+duration_sec: 55.0
 bpm: 240.0
 music_path: "res://level/data/BR-Freaky_feat_LezaLee_-fulllength-loopable-121_9BPM-Dm.WAV"
 music_start_offset_sec: 0.0
