@@ -15,6 +15,10 @@ run/main_scene="res://main/main_screen.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://icon.svg"
 
+[audio]
+
+buses/default_bus_layout="uid://burbco8kf82uf"
+
 [autoload]
 
 InputDeviceManager="*res://main/input_device_manager.gd"
@@ -41,3 +45,4 @@ tap={
 
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true
