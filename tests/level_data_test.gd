@@ -52,7 +52,7 @@ func _init() -> void:
 	_expect(stage_one.expanded_sequence().size() == 28, "stage one arrangement ends before its 55-second cutoff")
 	var serialized := LevelDataScript.to_yaml(stage_two.dictionary())
 	_expect("boss_health: 260" in serialized, "YAML export includes boss settings")
-	_expect("tutorial_lines:" in serialized, "YAML export includes story")
+	_expect(not "tutorial_lines:" in serialized, "built-in stages no longer contain story")
 	var decimal_bpm := stage_two.dictionary()
 	decimal_bpm["bpm"] = 121.75
 	_expect("bpm: 121.75" in LevelDataScript.to_yaml(decimal_bpm), "YAML export preserves decimal BPM")

@@ -310,6 +310,7 @@ theme_override_font_sizes/font_size = 20
 text = "보정"
 
 [node name="Dialogue" type="HBoxContainer" parent="Dimmer/Center/Panel/Margin/Rows"]
+visible = false
 custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
 

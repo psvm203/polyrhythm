@@ -27,7 +27,6 @@ const MAGENTA := Color("ed1671")
 @onready var stage_preview_music: AudioStreamPlayer = %StagePreviewMusic
 @onready var focus_sfx: AudioStreamPlayer = %FocusSfx
 @onready var click_sfx: AudioStreamPlayer = %ClickSfx
-@onready var unlock_dialogue: CanvasLayer = $UnlockDialogue
 @onready var timing_calibration: CanvasLayer = $TimingCalibrationOverlay
 @onready var controller_prompt: Label = %ControllerPrompt
 
@@ -105,11 +104,7 @@ func _ready() -> void:
 
 func _show_unlock_flow() -> void:
 	_show_stage_select()
-	await get_tree().create_timer(0.7).timeout
-	var unlocked_stage := ProgressStoreScript.consume_unlock_dialogue()
-	var lines := StageCatalogScript.unlock_dialogue(unlocked_stage)
-	if not lines.is_empty():
-		unlock_dialogue.play(lines, StageCatalogScript.UNLOCK_SPEAKER)
+	ProgressStoreScript.consume_unlock_dialogue()
 
 
 func _update_controller_prompt() -> void:

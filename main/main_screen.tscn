@@ -1336,6 +1336,7 @@ modulate = Color(0.4, 0.5, 0.75, 0.25)
 layout_mode = 2
 
 [node name="Dialogue" type="HBoxContainer" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows" unique_id=1531721541]
+visible = false
 custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
 
