@@ -29,8 +29,8 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible or timing_calibration.visible or not event.is_action_pressed("ui_cancel"):
 		return
-	stage_select_requested.emit()
 	get_viewport().set_input_as_handled()
+	stage_select_requested.emit()
 
 
 func show_result(stats: Dictionary, completed: bool) -> void:

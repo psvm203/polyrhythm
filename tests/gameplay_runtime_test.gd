@@ -81,7 +81,22 @@ func _run() -> void:
 	_expect(timed_level._level_ended and timed_level.result_overlay.visible, "55 seconds opens the result screen")
 	_expect(not timed_level.music.playing and timed_level.conductor.paused, "55 seconds stops music and gameplay together")
 	DirAccess.remove_absolute(trace_path)
-	timed_level.queue_free()
+	current_scene = timed_level
+	var cancel := InputEventKey.new()
+	cancel.keycode = KEY_ESCAPE
+	cancel.physical_keycode = KEY_ESCAPE
+	cancel.pressed = true
+	get_root().push_input(cancel)
+	_expect(get_root().is_input_handled(), "result consumes Escape before leaving the scene")
+	await scene_changed
+	_expect(current_scene.scene_file_path == "res://main/main_screen.tscn", "Escape from result returns to the main scene")
+	for _frame in range(180):
+		await process_frame
+		if not current_scene._transition_controller.is_transitioning():
+			break
+	_expect(current_scene.get_node("StageScreen").visible, "Escape returns to stage selection")
+	current_scene.queue_free()
+	await process_frame
 	DirAccess.remove_absolute(progress.save_path)
 	if _failures > 0:
 		push_error("Gameplay runtime tests failed: %d" % _failures)
