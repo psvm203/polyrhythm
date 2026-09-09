@@ -241,7 +241,7 @@ func _finish_level(completed: bool) -> void:
 		call_deferred("_return_to_editor")
 		return
 	if result_overlay != null:
-		result_overlay.show_result(stats, completed, final_rank)
+		result_overlay.show_result(stats, completed)
 	level_finished.emit(stats, completed, final_rank)
 
 

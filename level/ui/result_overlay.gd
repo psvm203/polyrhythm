@@ -6,7 +6,6 @@ const SettingsStoreScript = preload("res://main/settings_store.gd")
 signal retry_requested
 signal stage_select_requested
 
-@onready var rank_label: Label = %Rank
 @onready var summary_label: Label = %Summary
 @onready var rating_label: Label = %Rating
 @onready var timing_panel: PanelContainer = %TimingPanel
@@ -34,8 +33,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 
 
-func show_result(stats: Dictionary, completed: bool, rank: String) -> void:
-	rank_label.text = rank
+func show_result(stats: Dictionary, completed: bool) -> void:
 	retry_button.text = "Retry" if completed else "재시도"
 	stage_select_button.text = "Back" if completed else "돌아가기"
 	var rating := ProgressStoreScript.star_rating(stats["accuracy"], completed)

@@ -181,16 +181,16 @@ func _test_result_timing_feedback() -> void:
 		"mean_absolute_error_ms": 49.9,
 		"early_inputs": 3,
 	}
-	result.show_result(stats, true, "S")
+	result.show_result(stats, true)
 	_expect(not result.timing_panel.visible, "timing feedback stays hidden below 50 ms")
 	_expect(not result.calibration_button.is_visible_in_tree(), "calibration action stays hidden with timing feedback")
 	_expect(result.retry_button.text == "Retry", "completed result keeps the retry label")
 	_expect(result.stage_select_button.text == "Back", "completed result keeps the back label")
-	result.show_result(stats, false, "F")
+	result.show_result(stats, false)
 	_expect(result.retry_button.text == "재시도", "failed result localizes the retry label")
 	_expect(result.stage_select_button.text == "돌아가기", "failed result localizes the back label")
 	stats["average_offset_ms"] = 50.0
-	result.show_result(stats, true, "S")
+	result.show_result(stats, true)
 	_expect(result.timing_panel.visible, "timing feedback appears at positive 50 ms")
 	_expect(result.calibration_button.is_visible_in_tree(), "calibration action appears with timing feedback")
 	_expect(result.timing_report.text.contains("입력 오프셋을 보정해보세요."), "timing feedback recommends offset calibration")
@@ -198,7 +198,7 @@ func _test_result_timing_feedback() -> void:
 	_expect(result.timing_calibration.visible, "calibration action opens the timing calibration overlay")
 	result.timing_calibration.close()
 	stats["average_offset_ms"] = -50.0
-	result.show_result(stats, true, "S")
+	result.show_result(stats, true)
 	_expect(result.timing_panel.visible, "timing feedback appears at negative 50 ms")
 	_expect(result.timing_report.text.contains("-50.0 ms"), "timing feedback preserves offset direction")
 	_expect(not result.timing_report.text.contains("입력 경향"), "timing tendency is omitted")
