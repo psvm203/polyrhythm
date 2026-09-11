@@ -12,6 +12,7 @@ const DEFAULTS := {
 	"music_enabled": true,
 	"sfx_enabled": true,
 	"skip_seen_dialogue": false,
+	"demo_mode": false,
 	"timing_offset_ms": 0.0,
 	"controller_vibration_enabled": true,
 	"controller_vibration_strength": 70.0,
@@ -30,11 +31,14 @@ const AUDIO_BUSES := {"master": &"Master", "music": &"MenuMusic", "sfx": &"SFX"}
 const MIN_TIMING_OFFSET_MS := -150.0
 const MAX_TIMING_OFFSET_MS := 150.0
 
+# Tests can isolate persistence without changing the player's settings.
+static var save_path := SAVE_PATH
+
 
 static func load_settings() -> Dictionary:
 	var config := ConfigFile.new()
 	var values := DEFAULTS.duplicate()
-	if config.load(SAVE_PATH) == OK:
+	if config.load(save_path) == OK:
 		for key in DEFAULTS:
 			values[key] = config.get_value(SECTION, key, DEFAULTS[key])
 	return normalized(values)
@@ -55,7 +59,7 @@ static func save_settings(changes: Dictionary) -> void:
 	var config := ConfigFile.new()
 	for setting_key in values:
 		config.set_value(SECTION, setting_key, values[setting_key])
-	var error := config.save(SAVE_PATH)
+	var error := config.save(save_path)
 	if error != OK:
 		push_error("Failed to save settings: %s" % error_string(error))
 	apply(values)
@@ -75,6 +79,7 @@ static func normalized(settings: Dictionary) -> Dictionary:
 	var values := {
 		"fullscreen": bool(settings.get("fullscreen", DEFAULTS["fullscreen"])),
 		"skip_seen_dialogue": bool(settings.get("skip_seen_dialogue", DEFAULTS["skip_seen_dialogue"])),
+		"demo_mode": bool(settings.get("demo_mode", DEFAULTS["demo_mode"])),
 		"timing_offset_ms": clampf(
 			float(settings.get("timing_offset_ms", DEFAULTS["timing_offset_ms"])),
 			MIN_TIMING_OFFSET_MS,

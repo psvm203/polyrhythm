@@ -13,6 +13,7 @@ const STAGES := [
 	"res://level/data/level_6.yaml",
 	"res://level/data/level_7.yaml",
 	"res://level/data/level_8.yaml",
+	"res://level/data/level_9.yaml",
 ]
 
 var _assertions := 0
@@ -23,7 +24,43 @@ func _init() -> void:
 	for stage_index in STAGES.size():
 		_test_stage(stage_index + 1, STAGES[stage_index])
 	_test_editor_round_trip()
+	_test_matadora_variety()
 	_finish()
+
+
+func _test_matadora_variety() -> void:
+	var data = LevelDataScript.from_yaml("res://level/data/level_9.yaml")
+	var times: PackedFloat32Array = data.note_times_sec
+	var beat: float = 60.0 / data.bpm
+	var intervals := {}
+	var shapes := {}
+	var bars := {}
+	var previous := 0.0
+	var breakdown_notes := 0
+	var drive_notes := 0
+	for index in times.size():
+		var gap := times[index] - previous
+		_expect(gap >= 0.19, "Matadora leaves playable spacing between attacks")
+		intervals[roundi(gap / beat * 2.0)] = true
+		shapes[data.expanded_sequence()[index]] = true
+		var position := (times[index] - 0.027) / beat
+		var bar := floori((position + 0.08) / 4.0)
+		if not bars.has(bar):
+			bars[bar] = []
+		bars[bar].append(roundi((position - bar * 4) * 2.0))
+		if bar >= 32 and bar < 36:
+			breakdown_notes += 1
+		if bar >= 24 and bar < 32:
+			drive_notes += 1
+		previous = times[index]
+	var patterns := {}
+	for bar in bars:
+		patterns[str(bars[bar])] = true
+	_expect(patterns.size() >= 12, "Matadora uses distinct rhythms across its phrases")
+	_expect(intervals.size() >= 5, "Matadora combines bursts, beats, syncopation and rests")
+	_expect(shapes.size() >= 5, "Matadora varies polygon geometry")
+	_expect(breakdown_notes * 3 < drive_notes, "quiet breakdown has substantially fewer notes per bar")
+	_expect(times[0] >= 0.9 and data.duration_sec - times[-1] >= 0.35, "Matadora preserves lead-in and ending tail")
 
 
 func _test_stage(stage_number: int, path: String) -> void:
