@@ -66,7 +66,7 @@ func _test_main_settings_layout() -> void:
 	var calibration_color := calibration_button.get_theme_color("font_color")
 	_expect(calibration_color.g >= 0.95 and calibration_color.b >= 0.9, "calibration action uses the enabled cyan text color")
 	var cards: GridContainer = scene.get_node("StageScreen/StageLayout/CardsSlot/Cards")
-	var stage_names := ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"]
+	var stage_names := ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"]
 	for index in stage_names.size():
 		var stage: PanelContainer = cards.get_child(index)
 		var button: Button = stage.get_node("Stage%sButton" % stage_names[index])

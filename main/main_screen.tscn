@@ -554,9 +554,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -700.0
+offset_left = -555.0
 offset_top = -430.0
-offset_right = 700.0
+offset_right = 555.0
 offset_bottom = 430.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -613,7 +613,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-columns = 5
+columns = 4
 theme_override_constants/h_separation = 18
 theme_override_constants/v_separation = 14
 
@@ -1098,65 +1098,6 @@ layout_mode = 2
 theme_override_styles/focus = SubResource("StyleEmpty")
 flat = true
 
-[node name="StageNine" type="PanelContainer" parent="StageScreen/StageLayout/CardsSlot/Cards"]
-custom_minimum_size = Vector2(260, 300)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleStageLocked")
-
-[node name="Items" type="VBoxContainer" parent="StageScreen/StageLayout/CardsSlot/Cards/StageNine"]
-layout_mode = 2
-theme_override_constants/separation = 4
-
-[node name="Stage" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageNine/Items"]
-custom_minimum_size = Vector2(0, 28)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.48, 0.48, 0.48, 1)
-theme_override_font_sizes/font_size = 16
-text = "STAGE"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Number" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageNine/Items"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.52, 0.52, 0.52, 1)
-theme_override_font_sizes/font_size = 32
-text = "09"
-horizontal_alignment = 1
-
-[node name="Record" type="Control" parent="StageScreen/StageLayout/CardsSlot/Cards/StageNine/Items"]
-custom_minimum_size = Vector2(0, 144)
-layout_mode = 2
-script = ExtResource("3_record")
-
-[node name="Name" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageNine/Items"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_colors/font_color = Color(0.57, 0.57, 0.57, 1)
-theme_override_font_sizes/font_size = 18
-text = "Matadora"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Rating" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageNine/Items"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.32, 0.39, 0.48, 1)
-theme_override_font_sizes/font_size = 20
-text = "☆☆☆"
-horizontal_alignment = 1
-
-[node name="Best" type="Label" parent="StageScreen/StageLayout/CardsSlot/Cards/StageNine/Items"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.58, 0.72, 0.9, 1)
-theme_override_font_sizes/font_size = 15
-text = "기록 없음"
-horizontal_alignment = 1
-
-[node name="StageNineButton" type="Button" parent="StageScreen/StageLayout/CardsSlot/Cards/StageNine"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_styles/focus = SubResource("StyleEmpty")
-flat = true
-
 [node name="SettingsScreen" type="Control" parent="." unique_id=810323301]
 unique_name_in_owner = true
 visible = false
@@ -1631,40 +1572,6 @@ text = "보정"
 [node name="SeparatorTiming" type="HSeparator" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows" unique_id=761858926]
 modulate = Color(0.4, 0.5, 0.75, 0.25)
 layout_mode = 2
-
-[node name="DemoMode" type="HBoxContainer" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows"]
-custom_minimum_size = Vector2(0, 58)
-layout_mode = 2
-
-[node name="Icon" type="Label" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/DemoMode"]
-custom_minimum_size = Vector2(92, 0)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.35, 0.75, 0.95, 1)
-theme_override_font_sizes/font_size = 28
-text = "▱"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Label" type="Label" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/DemoMode"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.92, 0.94, 1, 1)
-theme_override_font_sizes/font_size = 22
-text = "데모 모드 (체력 0에서도 계속)"
-vertical_alignment = 1
-
-[node name="DemoModeToggle" type="Button" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/DemoMode"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(116, 54)
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleButtonNormal")
-theme_override_styles/pressed = SubResource("StyleButtonPressed")
-theme_override_styles/hover = SubResource("StyleButtonHover")
-theme_override_styles/focus = SubResource("StyleButtonHover")
-toggle_mode = true
-text = "Off"
 
 [node name="StageUnlock" type="HBoxContainer" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows" unique_id=1531721541]
 custom_minimum_size = Vector2(0, 58)

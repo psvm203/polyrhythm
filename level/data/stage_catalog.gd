@@ -36,10 +36,6 @@ const _STAGES := {
 		"name": "Freak Tonight",
 		"data_path": "res://level/data/level_8.yaml",
 	},
-	9: {
-		"name": "Matadora",
-		"data_path": "res://level/data/level_9.yaml",
-	},
 }
 
 

@@ -69,10 +69,10 @@ func _run() -> void:
 	var main = MainScene.instantiate()
 	root.add_child(main)
 	await process_frame
-	expect(main._stage_buttons().size() == 9, "all nine cards are present")
-	expect(main._stage_buttons()[8].disabled, "Matadora starts locked")
+	expect(main._stage_buttons().size() == 8, "all eight cards are present")
+	expect(main._stage_buttons()[7].disabled, "stage eight starts locked")
 	main.get_node("%UnlockAllStagesButton").pressed.emit()
-	expect(Progress.highest_unlocked_stage() == 9, "settings unlock persists all nine stages")
+	expect(Progress.highest_unlocked_stage() == 8, "settings unlock persists all eight stages")
 	expect(Progress.stage_record(1)["score"] == 12345, "unlock preserves existing records")
 	for button in main._stage_buttons():
 		expect(not button.disabled, "unlock immediately enables every stage card")
@@ -81,9 +81,6 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 	var cards: GridContainer = main.get_node("StageScreen/StageLayout/CardsSlot/Cards")
-	var stage_nine: BaseButton = main._stage_buttons()[8]
-	expect(stage_nine.get_node(stage_nine.focus_neighbor_top) == main._stage_buttons()[3], "Matadora keyboard focus reaches the card above")
-	expect(main._stage_buttons()[3].get_node(main._stage_buttons()[3].focus_neighbor_bottom) == stage_nine, "keyboard focus reaches Matadora from the first row")
 	for card in cards.get_children():
 		expect(main.get_global_rect().encloses(card.get_global_rect()), "stage card fits in viewport")
 		expect(card.get_global_rect().encloses(card.get_node("Items/Best").get_global_rect()), "record text fits inside card")
