@@ -82,6 +82,7 @@ func _ready() -> void:
 	if data_path.is_empty():
 		data_path = StageCatalogScript.data_path(ProgressStoreScript.selected_stage)
 	level_data = LevelDataScript.from_yaml(data_path)
+	$BackgroundLayer/Background.setup(StageCatalogScript.DEFAULT_STAGE if _is_custom_level else ProgressStoreScript.selected_stage)
 	for unknown_event in EventHandlerRegistryScript.unknown_event_names(level_data.events):
 		push_warning("Unknown level event ignored at runtime: %s" % unknown_event)
 	_event_system.setup(level_data.events)
