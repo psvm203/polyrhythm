@@ -10,6 +10,7 @@ const PALETTES := [
 	[Color("071d16"), Color("52e69a"), Color("67dbe8")], # Music Is Life
 	[Color("091827"), Color("609fe8"), Color("b7dceb")], # Keep Me Down
 	[Color("200b25"), Color("f660c5"), Color("9277ff")], # Freak Tonight
+	[Color("0c191a"), Color("9bbd94"), Color("eadbab")], # Circle Of Life
 ]
 
 var _stage: int = 1
@@ -21,6 +22,7 @@ var _analyzer: AudioEffectSpectrumAnalyzerInstance
 var _bass: float = 0.0
 var _mid: float = 0.0
 var _treble: float = 0.0
+var restoration: Control
 
 
 func setup(stage_number: int) -> void:
@@ -28,6 +30,14 @@ func setup(stage_number: int) -> void:
 	_base = PALETTES[_stage - 1][0]
 	_primary = PALETTES[_stage - 1][1]
 	_secondary = PALETTES[_stage - 1][2]
+	if restoration != null:
+		remove_child(restoration)
+		restoration.queue_free()
+		restoration = null
+	if _stage == 9:
+		restoration = preload("res://level/ui/city_restoration.gd").new()
+		add_child(restoration)
+		restoration.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	queue_redraw()
 
 
@@ -74,6 +84,8 @@ func _smoothed_energy(current: float, target: float, delta: float, speed: float)
 func _draw() -> void:
 	var view := size
 	draw_rect(Rect2(Vector2.ZERO, view), _base)
+	if _stage == 9:
+		return
 	_draw_glow(view)
 	match _stage:
 		1: _draw_orbits(view)

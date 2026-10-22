@@ -24,6 +24,7 @@ TRACKS = [
     ("Music Is Life", "JD_-_Music_Is_Life_-__original_instrumental_mix__-_loopable_-_140_BPM_-_E_flat_minor.WAV", 140),
     ("Keep Me Down", "JD-KeepMeDown-instrumental-loopable-174BPM-Cm.WAV", 174),
     ("Freak Tonight", "JD-FreakTonight-instrumental-loopable-177BPM-Ebm_wav.WAV", 177),
+    ("Circle Of Life", "JD-Robofunk-CircleOfLife-instrumental-loopable-120BPM-Dm.WAV", 120),
 ]
 
 
@@ -82,7 +83,7 @@ def generate(stage, name, filename, tagged_bpm, source_dir=ROOT / "level/data"):
     times, envelope, peaks, strengths, fit = analyze(samples, tagged_bpm)
     _, bpm, phase = fit
     beat = 60 / bpm
-    duration = 55.0 if stage == 1 else (192 if stage >= 7 else 128) * beat
+    duration = 55.0 if stage == 1 else (192 if stage in (7, 8) else 128) * beat
     # Pick a full musical phrase with sustained percussion, leaving a 2-beat lead-in.
     starts = [0.0] if stage == 1 else np.arange(phase, len(samples) / SR - duration, 16 * beat)
     start = max(starts, key=lambda t: float(np.mean(np.interp(np.arange(t, t + duration, beat), times, envelope))))
@@ -90,7 +91,7 @@ def generate(stage, name, filename, tagged_bpm, source_dir=ROOT / "level/data"):
         start = 0.0
     contacts, matches, beat_indices = [], [], []
     step = 2 if stage == 1 else 1
-    if stage >= 7:
+    if stage in (7, 8):
         step = 0.5
     first = max(0, int(np.ceil((start + 2 * beat - phase) / beat)))
     last = int(np.floor((start + duration - 0.5 - phase) / beat))
@@ -128,7 +129,7 @@ def generate(stage, name, filename, tagged_bpm, source_dir=ROOT / "level/data"):
                 verified.append((round(nearest, 6), match, index))
                 codec_adjustments.append(adjustment * 1000)
         contacts, matches, beat_indices = map(list, zip(*verified))
-    if stage >= 7:
+    if stage in (7, 8):
         # Fast music plays at half-time: preserve measured attacks on every second beat.
         relaxed = [(t, m, i) for t, m, i in zip(contacts, matches, beat_indices) if i % 2 == 0]
         contacts, matches, beat_indices = map(list, zip(*relaxed))
@@ -161,7 +162,7 @@ def generate(stage, name, filename, tagged_bpm, source_dir=ROOT / "level/data"):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source-dir", type=Path, default=ROOT / "level/data",
-                        help="External folder containing original WAV files for stages 2–8")
+                        help="External folder containing original WAV files for stages 2–9")
     args = parser.parse_args()
     missing = [str((ROOT / "level/data" if i == 1 else args.source_dir) / track[1])
                for i, track in enumerate(TRACKS, 1)

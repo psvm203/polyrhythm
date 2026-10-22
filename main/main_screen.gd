@@ -168,7 +168,8 @@ func _configure_stage_focus(buttons: Array[BaseButton], active_count: int) -> vo
 		var next_index := wrapi(index + 1, 0, count)
 		buttons[index].focus_neighbor_left = buttons[index].get_path_to(buttons[previous_index])
 		buttons[index].focus_neighbor_right = buttons[index].get_path_to(buttons[next_index])
-		var vertical_index := index + 4 if index < 4 else index - 4
+		var columns: int = $StageScreen/StageLayout/CardsSlot/Cards.columns
+		var vertical_index := index + columns if index < columns else index - columns
 		var vertical: Control = buttons[vertical_index] if vertical_index < count else %BackButton
 		buttons[index].focus_neighbor_top = buttons[index].get_path_to(vertical)
 		buttons[index].focus_neighbor_bottom = buttons[index].get_path_to(vertical)
