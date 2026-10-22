@@ -13,7 +13,6 @@ const DEFAULTS := {
 	"music_enabled": true,
 	"sfx_enabled": true,
 	"skip_seen_dialogue": false,
-	"demo_mode": false,
 	"timing_offset_ms": 0.0,
 	"controller_vibration_enabled": true,
 	"controller_vibration_strength": 70.0,
@@ -81,7 +80,6 @@ static func normalized(settings: Dictionary) -> Dictionary:
 		"experience_mode": bool(settings.get("experience_mode", DEFAULTS["experience_mode"])),
 		"fullscreen": bool(settings.get("fullscreen", DEFAULTS["fullscreen"])),
 		"skip_seen_dialogue": bool(settings.get("skip_seen_dialogue", DEFAULTS["skip_seen_dialogue"])),
-		"demo_mode": bool(settings.get("demo_mode", DEFAULTS["demo_mode"])),
 		"timing_offset_ms": clampf(
 			float(settings.get("timing_offset_ms", DEFAULTS["timing_offset_ms"])),
 			MIN_TIMING_OFFSET_MS,

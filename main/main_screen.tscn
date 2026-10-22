@@ -1631,41 +1631,6 @@ text = "보정"
 [node name="SeparatorTiming" type="HSeparator" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows" unique_id=761858926]
 modulate = Color(0.4, 0.5, 0.75, 0.25)
 layout_mode = 2
-
-[node name="DemoMode" type="HBoxContainer" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows"]
-custom_minimum_size = Vector2(0, 58)
-layout_mode = 2
-
-[node name="Icon" type="Label" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/DemoMode"]
-custom_minimum_size = Vector2(92, 0)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.35, 0.75, 0.95, 1)
-theme_override_font_sizes/font_size = 28
-text = "▱"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Label" type="Label" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/DemoMode"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.92, 0.94, 1, 1)
-theme_override_font_sizes/font_size = 22
-text = "데모 모드 (체력 0에서도 계속)"
-vertical_alignment = 1
-
-[node name="DemoModeToggle" type="Button" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/DemoMode"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(116, 54)
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleButtonNormal")
-theme_override_styles/pressed = SubResource("StyleButtonPressed")
-theme_override_styles/hover = SubResource("StyleButtonHover")
-theme_override_styles/focus = SubResource("StyleButtonHover")
-toggle_mode = true
-text = "Off"
-
 [node name="StageUnlock" type="HBoxContainer" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows" unique_id=1531721541]
 custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
