@@ -5,6 +5,7 @@ const SAVE_PATH := "user://settings.cfg"
 const SECTION := "settings"
 const DEFAULTS := {
 	"fullscreen": false,
+	"experience_mode": false,
 	"master_volume": 100.0,
 	"music_volume": 100.0,
 	"sfx_volume": 100.0,
@@ -73,6 +74,7 @@ static func apply(settings: Dictionary) -> void:
 
 static func normalized(settings: Dictionary) -> Dictionary:
 	var values := {
+		"experience_mode": bool(settings.get("experience_mode", DEFAULTS["experience_mode"])),
 		"fullscreen": bool(settings.get("fullscreen", DEFAULTS["fullscreen"])),
 		"skip_seen_dialogue": bool(settings.get("skip_seen_dialogue", DEFAULTS["skip_seen_dialogue"])),
 		"timing_offset_ms": clampf(

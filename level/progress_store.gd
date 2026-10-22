@@ -68,6 +68,14 @@ static func unlock_all_stages() -> Error:
 	return _save(config)
 
 
+static func reset_all_records() -> Error:
+	var error := _save(ConfigFile.new())
+	if error == OK:
+		selected_stage = 1
+		show_stage_select_on_load = false
+	return error
+
+
 static func next_unlocked_stage(cleared_stage: int, highest_unlocked: int) -> int:
 	return clampi(maxi(highest_unlocked, cleared_stage + 1), 1, LAST_STAGE)
 

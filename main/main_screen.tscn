@@ -1208,7 +1208,7 @@ layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="Fullscreen" type="HBoxContainer" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows" unique_id=763417926]
-custom_minimum_size = Vector2(0, 82)
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 
 [node name="Icon" type="Label" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/Fullscreen" unique_id=173730863]
@@ -1254,7 +1254,7 @@ modulate = Color(0.4, 0.5, 0.75, 0.25)
 layout_mode = 2
 
 [node name="Resolution" type="HBoxContainer" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows" unique_id=2056505483]
-custom_minimum_size = Vector2(0, 82)
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 
 [node name="Icon" type="Label" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/Resolution" unique_id=968933160]
@@ -1286,7 +1286,7 @@ modulate = Color(0.4, 0.5, 0.75, 0.25)
 layout_mode = 2
 
 [node name="Master" type="HBoxContainer" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows" unique_id=3955673]
-custom_minimum_size = Vector2(0, 82)
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 theme_override_constants/separation = 14
 
@@ -1343,7 +1343,7 @@ modulate = Color(0.4, 0.5, 0.75, 0.25)
 layout_mode = 2
 
 [node name="Music" type="HBoxContainer" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows" unique_id=1558011780]
-custom_minimum_size = Vector2(0, 82)
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 theme_override_constants/separation = 14
 
@@ -1400,7 +1400,7 @@ modulate = Color(0.4, 0.5, 0.75, 0.25)
 layout_mode = 2
 
 [node name="Sfx" type="HBoxContainer" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows" unique_id=692569333]
-custom_minimum_size = Vector2(0, 82)
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 theme_override_constants/separation = 14
 
@@ -1457,7 +1457,7 @@ modulate = Color(0.4, 0.5, 0.75, 0.25)
 layout_mode = 2
 
 [node name="Vibration" type="HBoxContainer" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows" unique_id=1022416632]
-custom_minimum_size = Vector2(0, 82)
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 theme_override_constants/separation = 14
 
@@ -1514,7 +1514,7 @@ modulate = Color(0.4, 0.5, 0.75, 0.25)
 layout_mode = 2
 
 [node name="Timing" type="HBoxContainer" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows" unique_id=2001795702]
-custom_minimum_size = Vector2(0, 82)
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 theme_override_constants/separation = 14
 
@@ -1605,6 +1605,81 @@ theme_override_styles/pressed = SubResource("StyleButtonPressed")
 theme_override_styles/hover = SubResource("StyleButtonHover")
 theme_override_styles/focus = SubResource("StyleButtonHover")
 text = "해금"
+
+[node name="ExperienceMode" type="HBoxContainer" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows"]
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+
+[node name="Icon" type="Label" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/ExperienceMode"]
+custom_minimum_size = Vector2(92, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.75, 0.95, 1)
+theme_override_font_sizes/font_size = 28
+text = "▱"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/ExperienceMode"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.92, 0.94, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "체험 모드 (체력이 0이 되어도 계속)"
+vertical_alignment = 1
+
+[node name="ExperienceModeToggle" type="Button" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/ExperienceMode"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(116, 54)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleButtonNormal")
+theme_override_styles/pressed = SubResource("StyleButtonPressed")
+theme_override_styles/hover = SubResource("StyleButtonHover")
+theme_override_styles/focus = SubResource("StyleButtonHover")
+toggle_mode = true
+text = "Off"
+
+[node name="ResetRecords" type="HBoxContainer" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows"]
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+
+[node name="Icon" type="Label" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/ResetRecords"]
+custom_minimum_size = Vector2(92, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.75, 0.95, 1)
+theme_override_font_sizes/font_size = 28
+text = "▱"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/ResetRecords"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.92, 0.94, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "모든 기록 초기화"
+vertical_alignment = 1
+
+[node name="ResetRecordsButton" type="Button" parent="SettingsScreen/SettingsLayout/SettingsPanelSlot/SettingsPanel/Margin/Rows/ResetRecords"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(116, 54)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleButtonNormal")
+theme_override_styles/pressed = SubResource("StyleButtonPressed")
+theme_override_styles/hover = SubResource("StyleButtonHover")
+theme_override_styles/focus = SubResource("StyleButtonHover")
+text = "초기화"
+
+[node name="ResetRecordsDialog" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+title = "모든 기록 초기화"
+dialog_text = "모든 스테이지의 점수, 해금 상태, 대화 열람 기록을 초기화합니다.
+이 작업은 되돌릴 수 없습니다."
+ok_button_text = "초기화"
+cancel_button_text = "취소"
 
 [node name="TransitionLogo" type="HBoxContainer" parent="." unique_id=2085095181]
 unique_name_in_owner = true

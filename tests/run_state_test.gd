@@ -8,8 +8,9 @@ var _failures := 0
 func _init() -> void:
 	_test_successful_run()
 	_test_failed_run()
+	_test_experience_mode()
 	if _failures == 0:
-		print("Run state tests passed: 13 assertions")
+		print("Run state tests passed: experience mode included")
 		quit(0)
 	else:
 		push_error("Run state tests failed: %d assertion(s)" % _failures)
@@ -48,6 +49,21 @@ func _test_failed_run() -> void:
 	var resolved_before := state.resolved_notes
 	state.apply_judgment("Perfect", 7)
 	_expect(state.resolved_notes == resolved_before, "failed run ignores later judgments")
+
+
+func _test_experience_mode() -> void:
+	for judgment in ["Too Slow", "Too Fast"]:
+		var state := RunStateScript.new()
+		state.experience_mode = true
+		var failed := [false]
+		state.failed.connect(func() -> void: failed[0] = true)
+		state.setup(40)
+		for index in 30:
+			state.apply_judgment(judgment, index)
+		_expect(state.gauge == 0.0 and not failed[0], "experience mode continues at zero after " + judgment)
+		var resolved_before := state.resolved_notes
+		state.apply_judgment("Perfect", 30)
+		_expect(state.resolved_notes == resolved_before + 1 and state.gauge == 2.0, "judgments and recovery continue at zero")
 
 
 func _expect(condition: bool, label: String) -> void:

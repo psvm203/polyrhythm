@@ -138,6 +138,7 @@ func _ready() -> void:
 		conductor.judged.connect(_on_judged)
 	_run_state.changed.connect(_on_stats_changed)
 	_run_state.failed.connect(_on_run_failed)
+	_run_state.experience_mode = bool(game_settings["experience_mode"])
 	_run_state.setup(_level_sequence.size())
 	_boss_health = level_data.boss_health
 	gameplay_hud.setup_boss(level_data.boss_name, _boss_health, _event_system.has_event(EVENT_SAMURAI), _event_system.has_event(EVENT_TIME_STOP))

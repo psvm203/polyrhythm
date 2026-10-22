@@ -7,6 +7,7 @@ signal failed
 const START_GAUGE := 70.0
 const JUDGMENTS := ["Perfect", "Fast", "Slow", "Too Slow"]
 
+var experience_mode: bool = false
 var total_notes: int = 0
 var score: int = 0
 var combo: int = 0
@@ -129,6 +130,6 @@ func snapshot() -> Dictionary:
 
 func _emit_change() -> void:
 	changed.emit(snapshot())
-	if gauge <= 0.0 and not _failed:
+	if gauge <= 0.0 and not _failed and not experience_mode:
 		_failed = true
 		failed.emit()

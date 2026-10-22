@@ -83,6 +83,10 @@ func _ready() -> void:
 	%MusicEnabled.toggled.connect(_set_audio_enabled.bind("music_enabled", %MusicEnabled))
 	%SfxEnabled.toggled.connect(_set_audio_enabled.bind("sfx_enabled", %SfxEnabled))
 	%UnlockAllStagesButton.pressed.connect(_unlock_all_stages)
+	%ExperienceModeToggle.toggled.connect(_set_audio_enabled.bind("experience_mode", %ExperienceModeToggle))
+	%ResetRecordsButton.pressed.connect(%ResetRecordsDialog.popup_centered)
+	%ResetRecordsDialog.confirmed.connect(_reset_all_records)
+	%ResetRecordsDialog.canceled.connect(%ResetRecordsButton.grab_focus)
 	%MasterSlider.value_changed.connect(_play_slider_sfx)
 	%MusicSlider.value_changed.connect(_play_slider_sfx)
 	%SfxSlider.value_changed.connect(_play_slider_sfx)
@@ -563,6 +567,7 @@ func _initialize_settings() -> void:
 	SettingsStoreScript.apply(settings)
 	%FullscreenToggle.set_pressed_no_signal(settings["fullscreen"])
 	_update_unlock_button()
+	_sync_audio_toggle(%ExperienceModeToggle, settings["experience_mode"])
 	%TimingSlider.set_value_no_signal(settings["timing_offset_ms"])
 	_update_timing_offset_label(settings["timing_offset_ms"])
 	_setup_resolution(%ResolutionOption, settings)
@@ -600,6 +605,16 @@ func _unlock_all_stages() -> void:
 		return
 	_refresh_stage_cards()
 	_update_unlock_button()
+
+
+func _reset_all_records() -> void:
+	if ProgressStoreScript.reset_all_records() != OK:
+		%ResetRecordsButton.text = "초기화 실패 · 다시 시도"
+	else:
+		_refresh_stage_cards()
+		_update_unlock_button()
+		%ResetRecordsButton.text = "초기화 완료"
+	%ResetRecordsButton.grab_focus()
 
 
 func _update_unlock_button() -> void:
