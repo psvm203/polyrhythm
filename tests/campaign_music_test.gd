@@ -89,18 +89,24 @@ func _run() -> void:
 	await process_frame
 	var cards: GridContainer = main.get_node("StageScreen/StageLayout/CardsSlot/Cards")
 	expect(not cards.get_node("StageNine").visible, "Matadora card stays hidden from the stage grid")
-	var secret_button: Button = main.get_node("%SecretStageButton")
-	expect(secret_button.focus_mode == Control.FOCUS_NONE, "secret stage button stays out of keyboard navigation")
-	expect(secret_button.size.x <= 24.0 and secret_button.size.y <= 24.0, "secret stage button is very small")
-	var stage_screen_rect: Rect2 = main.get_node("StageScreen").get_global_rect()
-	var secret_rect: Rect2 = secret_button.get_global_rect()
-	expect(stage_screen_rect.encloses(secret_rect), "secret stage button fits inside the stage screen")
-	expect(secret_rect.end.x > stage_screen_rect.end.x - 40.0 and secret_rect.end.y > stage_screen_rect.end.y - 40.0, "secret stage button sits in the bottom-right corner")
+	expect(cards.columns == 4, "stage cards use four columns")
 	for card in cards.get_children():
 		if not card.visible:
 			continue
 		expect(main.get_global_rect().encloses(card.get_global_rect()), "stage card fits in viewport")
 		expect(card.get_global_rect().encloses(card.get_node("Items/Best").get_global_rect()), "record text fits inside card")
+	main.get_node("%CreditsButton").pressed.emit()
+	await process_frame
+	var credit_name: Button = main.get_node("%LeeMoonBinButton")
+	var close_button: Button = main.get_node("%CloseButton")
+	expect(main.get_node("%Overlay").visible and credit_name.is_visible_in_tree(), "credits reveal the hidden stage entry")
+	expect(credit_name.focus_mode == Control.FOCUS_ALL, "hidden stage entry is gamepad focusable")
+	credit_name.grab_focus()
+	expect(main.get_viewport().gui_get_focus_owner() == credit_name, "gamepad focus reaches the hidden stage entry")
+	expect(close_button.focus_neighbor_top == close_button.get_path_to(credit_name), "close button points at the hidden stage entry")
+	expect(credit_name.focus_neighbor_bottom == credit_name.get_path_to(close_button), "hidden stage entry points back at the close button")
+	close_button.pressed.emit()
+	await process_frame
 	main.settings_screen.show()
 	await process_frame
 	var unlock_button: Button = main.get_node("%UnlockAllStagesButton")

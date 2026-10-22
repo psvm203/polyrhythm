@@ -67,7 +67,7 @@ func _ready() -> void:
 		button.pressed.connect(_start_game.bind(stage_number))
 		var data = LevelDataScript.from_yaml(StageCatalogScript.data_path(stage_number))
 		_setup_stage_card(button, card, card.get_node("Items/Record"), AudioStreamLoaderScript.load_stream(data.music_path))
-	%SecretStageButton.pressed.connect(_start_game.bind(SECRET_STAGE))
+	%LeeMoonBinButton.pressed.connect(_start_game.bind(SECRET_STAGE))
 	_refresh_stage_cards()
 	%EditorButton.pressed.connect(_open_level_editor)
 	%SettingsButton.pressed.connect(_show_settings)
@@ -693,6 +693,9 @@ func _show_credits() -> void:
 	overlay_title.hide()
 	overlay_body.hide()
 	credits_content.show()
+	var credit_name: Button = %LeeMoonBinButton
+	close_button.focus_neighbor_top = close_button.get_path_to(credit_name)
+	credit_name.focus_neighbor_bottom = credit_name.get_path_to(close_button)
 
 
 func _show_exit() -> void:
@@ -718,6 +721,7 @@ func _show_overlay(title: String, body: String) -> void:
 	overlay.show()
 	menu.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_clear_focus()
+	close_button.focus_neighbor_top = NodePath()
 	close_button.grab_focus()
 
 
