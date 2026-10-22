@@ -17,14 +17,13 @@ ROOT = Path(__file__).resolve().parents[1]
 SR, HOP, FFT = 22050, 128, 1024
 TRACKS = [
     ("Freaky", "BR-Freaky_feat_LezaLee_-fulllength-loopable-121_9BPM-Dm.WAV", 121.9),
+    ("Circle Of Life", "JD-Robofunk-CircleOfLife-instrumental-loopable-120BPM-Dm.WAV", 120),
     ("Electric Elegance", "JD-ElectricElegance-loopable-114BPM-Bbm.WAV", 114),
     ("City Strut", "JD-CityStrut-loopable-120BPM-Dm.WAV", 120),
     ("Jump Up", "JD-JumpUp_JadeBluHouseinstrumental_-loopable-128BPM-Gm.WAV", 128),
-    ("Take Me Over", "BR-TakeMeOver-fulllength-loopable-132BPM-Dm.WAV", 132),
     ("Music Is Life", "JD_-_Music_Is_Life_-__original_instrumental_mix__-_loopable_-_140_BPM_-_E_flat_minor.WAV", 140),
     ("Keep Me Down", "JD-KeepMeDown-instrumental-loopable-174BPM-Cm.WAV", 174),
     ("Freak Tonight", "JD-FreakTonight-instrumental-loopable-177BPM-Ebm_wav.WAV", 177),
-    ("Circle Of Life", "JD-Robofunk-CircleOfLife-instrumental-loopable-120BPM-Dm.WAV", 120),
 ]
 
 
@@ -137,11 +136,11 @@ def generate(stage, name, filename, tagged_bpm, source_dir=ROOT / "level/data"):
     sequence = polygon_sequence(contacts, beat_indices, beat)
     events = []
     boss, health = "", 0
-    if stage == 3:
+    if stage == 4:
         # Ordinary triangle pairs preserve the chart's paired accents, without a boss event.
         for index in range(4, len(sequence) - 1, 8):
             sequence[index:index + 2] = [3, 3]
-    if stage == 4:
+    if stage == 5:
         boss, health = "CHRONOMANCER", len(contacts)
         events = [{"name": "time_stop", "at": list(range(16, len(sequence) + 1, 16)), "duration_sec": 0.65}]
     data = dict(sides_sequence=sequence, repeat_count=1, bpm=round(bpm, 6),
@@ -162,7 +161,7 @@ def generate(stage, name, filename, tagged_bpm, source_dir=ROOT / "level/data"):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source-dir", type=Path, default=ROOT / "level/data",
-                        help="External folder containing original WAV files for stages 2–9")
+                        help="External folder containing original WAV files for stages 2–8")
     args = parser.parse_args()
     missing = [str((ROOT / "level/data" if i == 1 else args.source_dir) / track[1])
                for i, track in enumerate(TRACKS, 1)

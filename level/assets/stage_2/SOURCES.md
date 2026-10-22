@@ -1,8 +1,8 @@
-# Stage 9 assets
+# Stage 2 assets
 
 - Ruins: user-provided Vecteezy image, downloaded unchanged from https://static.vecteezy.com/system/resources/previews/075/201/809/non_2x/devastated-middle-east-city-buildings-ruins-after-war-with-rubble-black-and-white-outline-line-art-drawing-vector.jpg
 - Restored: generated with the built-in image_gen tool using ruins.jpg as the edit reference. Saved as restored.png.
-- Music: JD-Robofunk-CircleOfLife-instrumental-loopable-120BPM-Dm.WAV, supplied in /Users/mb/Documents/urban dreams. Extracted 48.492–112.492 seconds to level/data/music/stage_9.ogg; 120 BPM, 125 measured notes. Analysis provenance: docs/music_maps.json.
+- Music: JD-Robofunk-CircleOfLife-instrumental-loopable-120BPM-Dm.WAV, supplied in /Users/mb/Documents/urban dreams. Extracted 48.492–112.492 seconds to level/data/music/stage_2.ogg; 120 BPM, 125 measured notes. Analysis provenance: docs/music_maps.json.
 
 ## Generation prompt
 

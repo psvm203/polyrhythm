@@ -9,19 +9,19 @@ const _STAGES := {
 		"data_path": "res://level/data/level_1.yaml",
 	},
 	2: {
-		"name": "Electric Elegance",
+		"name": "Circle Of Life",
 		"data_path": "res://level/data/level_2.yaml",
 	},
 	3: {
-		"name": "Shape Samurai",
+		"name": "Electric Elegance",
 		"data_path": "res://level/data/level_3.yaml",
 	},
 	4: {
-		"name": "Time Rift",
+		"name": "Shape Samurai",
 		"data_path": "res://level/data/level_4.yaml",
 	},
 	5: {
-		"name": "Take Me Over",
+		"name": "Time Rift",
 		"data_path": "res://level/data/level_5.yaml",
 	},
 	6: {
@@ -35,10 +35,6 @@ const _STAGES := {
 	8: {
 		"name": "Freak Tonight",
 		"data_path": "res://level/data/level_8.yaml",
-	},
-	9: {
-		"name": "Circle Of Life",
-		"data_path": "res://level/data/level_9.yaml",
 	},
 }
 

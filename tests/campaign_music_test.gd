@@ -39,9 +39,9 @@ func _run() -> void:
 		var times: PackedFloat32Array = level.conductor.scheduled_judgment_times
 		expect(times.size() == level._level_sequence.size(), "expanded geometry has one onset per polygon")
 		expect(level.music.stream != null and level.music.stream.get_length() + 0.01 >= data.duration_sec, "music covers full stage")
-		if stage == 9:
+		if stage == 2:
 			expect(data.tutorial_lines.is_empty() and data.events.is_empty(), "reconstruction has no story or boss events")
-			expect(level.get_node("BackgroundLayer/Background").restoration != null, "stage nine loads reconstruction visuals")
+			expect(level.get_node("BackgroundLayer/Background").restoration != null, "stage two loads reconstruction visuals")
 		var report: Dictionary = reports[stage - 1]
 		for index in times.size():
 			var source_time: float = report["note_times_sec"][index]
@@ -58,7 +58,7 @@ func _run() -> void:
 				await create_timer(0.7).timeout
 			expect(level._run_state.resolved_notes == index + 1, "audio-timed input resolves exactly one polygon")
 			expect(level._run_state.judgments["Perfect"] == index + 1, "all audio attacks score Perfect")
-		if stage == 9:
+		if stage == 2:
 			var city = level.get_node("BackgroundLayer/Background").restoration
 			expect(is_equal_approx(city.target_progress, 1.0), "final note finishes reconstruction")
 			city._process(5.0)
@@ -77,10 +77,10 @@ func _run() -> void:
 	var main = MainScene.instantiate()
 	root.add_child(main)
 	await process_frame
-	expect(main._stage_buttons().size() == 9, "all nine cards are present")
-	expect(main._stage_buttons()[8].disabled, "stage nine starts locked")
+	expect(main._stage_buttons().size() == 8, "all eight cards are present")
+	expect(main._stage_buttons()[7].disabled, "stage eight starts locked")
 	main.get_node("%UnlockAllStagesButton").pressed.emit()
-	expect(Progress.highest_unlocked_stage() == 9, "settings unlock persists all nine stages")
+	expect(Progress.highest_unlocked_stage() == 8, "settings unlock persists all eight stages")
 	expect(Progress.stage_record(1)["score"] == 12345, "unlock preserves existing records")
 	for button in main._stage_buttons():
 		expect(not button.disabled, "unlock immediately enables every stage card")
@@ -99,19 +99,19 @@ func _run() -> void:
 	var reset_button: Button = main.get_node("%ResetRecordsButton")
 	expect(main.get_global_rect().encloses(reset_button.get_global_rect()), "reset button fits in settings viewport")
 	Progress.mark_dialogue_seen("stage_1_tutorial")
-	Progress.mark_stage_played(9)
+	Progress.mark_stage_played(8)
 	reset_button.pressed.emit()
 	expect(main.get_node("%ResetRecordsDialog").visible, "reset asks for confirmation")
 	expect(Progress.stage_record(1)["score"] == 12345, "opening confirmation preserves records")
 	main.get_node("%ResetRecordsDialog").hide()
 	main.get_node("%ResetRecordsDialog").canceled.emit()
-	expect(Progress.highest_unlocked_stage() == 9, "cancel preserves unlocks")
+	expect(Progress.highest_unlocked_stage() == 8, "cancel preserves unlocks")
 	main.get_node("%ResetRecordsDialog").confirmed.emit()
 	expect(Progress.highest_unlocked_stage() == 1 and Progress.last_played_stage() == 1, "reset restores initial progress")
 	expect(Progress.pending_unlock_dialogue() == 0 and not Progress.has_seen_dialogue("stage_1_tutorial"), "reset clears dialogue history")
 	for stage in Catalog.stage_numbers():
 		expect(Progress.stage_record(stage)["score"] == 0 and not Progress.stage_record(stage)["cleared"], "reset clears every stage record")
-	expect(main._stage_buttons()[8].disabled and not main.get_node("%UnlockAllStagesButton").disabled, "reset refreshes cards and unlock action")
+	expect(main._stage_buttons()[7].disabled and not main.get_node("%UnlockAllStagesButton").disabled, "reset refreshes cards and unlock action")
 	main.background_music.stop()
 	main.stage_preview_music.stop()
 	main.queue_free()

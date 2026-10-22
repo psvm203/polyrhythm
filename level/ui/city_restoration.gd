@@ -1,16 +1,16 @@
 extends Control
 
 const FRAMES: Array[Texture2D] = [
-	preload("res://level/assets/stage_9/ruins.jpg"),
-	preload("res://level/assets/stage_9/rebuild_02.png"),
-	preload("res://level/assets/stage_9/rebuild_03.png"),
-	preload("res://level/assets/stage_9/rebuild_04.png"),
-	preload("res://level/assets/stage_9/rebuild_05.png"),
-	preload("res://level/assets/stage_9/rebuild_06.png"),
-	preload("res://level/assets/stage_9/rebuild_07.png"),
-	preload("res://level/assets/stage_9/rebuild_08.png"),
-	preload("res://level/assets/stage_9/rebuild_09.png"),
-	preload("res://level/assets/stage_9/restored.png"),
+	preload("res://level/assets/stage_2/ruins.jpg"),
+	preload("res://level/assets/stage_2/rebuild_02.png"),
+	preload("res://level/assets/stage_2/rebuild_03.png"),
+	preload("res://level/assets/stage_2/rebuild_04.png"),
+	preload("res://level/assets/stage_2/rebuild_05.png"),
+	preload("res://level/assets/stage_2/rebuild_06.png"),
+	preload("res://level/assets/stage_2/rebuild_07.png"),
+	preload("res://level/assets/stage_2/rebuild_08.png"),
+	preload("res://level/assets/stage_2/rebuild_09.png"),
+	preload("res://level/assets/stage_2/restored.png"),
 ]
 const FADE_DURATION := 1.5
 const INK_SHADER = preload("res://level/ui/city_restoration.gdshader")

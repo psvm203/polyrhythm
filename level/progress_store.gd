@@ -7,7 +7,9 @@ const UNLOCKED_KEY := "highest_unlocked_stage"
 const PENDING_DIALOGUE_KEY := "pending_unlock_dialogue"
 const LAST_PLAYED_STAGE_KEY := "last_played_stage"
 const SEEN_DIALOGUE_SECTION := "seen_dialogue"
-const LAST_STAGE := 9
+const LAST_STAGE := 8
+const STAGE_ORDER_VERSION := 2
+const PREVIOUS_STAGE_ORDER := {1: 1, 9: 2, 2: 3, 3: 4, 4: 5, 6: 6, 7: 7, 8: 8}
 
 static var selected_stage := 1
 static var show_stage_select_on_load := false
@@ -141,11 +143,54 @@ static func star_rating(accuracy: float, completed: bool = true) -> Dictionary:
 
 static func _load() -> ConfigFile:
 	var config := ConfigFile.new()
-	config.load(save_path)
+	var loaded := config.load(save_path) == OK
+	if loaded and int(config.get_value(SECTION, "stage_order_version", 1)) < STAGE_ORDER_VERSION:
+		var backup_path := save_path + ".before_stage_reorder"
+		if not FileAccess.file_exists(backup_path):
+			var error := config.save(backup_path)
+			if error != OK:
+				push_error("Failed to back up progress before stage reorder: %s" % error_string(error))
+				return config
+		_migrate_stage_order(config)
+		_save(config)
 	return config
 
 
+static func _migrate_stage_order(config: ConfigFile) -> void:
+	var records := {}
+	var seen := {}
+	# Snapshot before replacing sections, since several old and new numbers overlap.
+	for old_stage in range(1, 10):
+		var section := "stage_%d" % old_stage
+		if config.has_section(section):
+			var record := {}
+			for key in config.get_section_keys(section):
+				record[key] = config.get_value(section, key)
+			records[old_stage] = record
+			config.erase_section(section)
+		var dialogue := section + "_tutorial"
+		if config.has_section_key(SEEN_DIALOGUE_SECTION, dialogue):
+			seen[old_stage] = config.get_value(SEEN_DIALOGUE_SECTION, dialogue)
+			config.erase_section_key(SEEN_DIALOGUE_SECTION, dialogue)
+	var previous_highest := int(config.get_value(SECTION, UNLOCKED_KEY, 1))
+	var highest := 1
+	for old_stage in PREVIOUS_STAGE_ORDER:
+		var new_stage: int = PREVIOUS_STAGE_ORDER[old_stage]
+		for key in records.get(old_stage, {}):
+			config.set_value("stage_%d" % new_stage, key, records[old_stage][key])
+		if seen.has(old_stage):
+			config.set_value(SEEN_DIALOGUE_SECTION, "stage_%d_tutorial" % new_stage, seen[old_stage])
+		if old_stage <= previous_highest:
+			highest = maxi(highest, new_stage)
+	config.set_value(SECTION, UNLOCKED_KEY, highest)
+	for key in [LAST_PLAYED_STAGE_KEY, PENDING_DIALOGUE_KEY]:
+		var fallback := 1 if key == LAST_PLAYED_STAGE_KEY else 0
+		var previous := int(config.get_value(SECTION, key, fallback))
+		config.set_value(SECTION, key, PREVIOUS_STAGE_ORDER.get(previous, fallback))
+
+
 static func _save(config: ConfigFile) -> Error:
+	config.set_value(SECTION, "stage_order_version", STAGE_ORDER_VERSION)
 	var error := config.save(save_path)
 	if error != OK:
 		push_error("Failed to save progress: %s" % error_string(error))

@@ -3,14 +3,13 @@ extends Control
 # Base, primary glow, secondary glow, in campaign order.
 const PALETTES := [
 	[Color("071126"), Color("438cff"), Color("a45dff")], # Rhythm Start
+	[Color("0c191a"), Color("9bbd94"), Color("eadbab")], # Circle Of Life
 	[Color("041b22"), Color("19e0db"), Color("c1ed68")], # Electric Elegance
 	[Color("210912"), Color("f05275"), Color("ffc1a0")], # Shape Samurai
 	[Color("150c29"), Color("ac78ff"), Color("e9c876")], # Time Rift
-	[Color("211209"), Color("ffa34f"), Color("f36e9e")], # Take Me Over
 	[Color("071d16"), Color("52e69a"), Color("67dbe8")], # Music Is Life
 	[Color("091827"), Color("609fe8"), Color("b7dceb")], # Keep Me Down
 	[Color("200b25"), Color("f660c5"), Color("9277ff")], # Freak Tonight
-	[Color("0c191a"), Color("9bbd94"), Color("eadbab")], # Circle Of Life
 ]
 
 var _stage: int = 1
@@ -34,7 +33,7 @@ func setup(stage_number: int) -> void:
 		remove_child(restoration)
 		restoration.queue_free()
 		restoration = null
-	if _stage == 9:
+	if _stage == 2:
 		restoration = preload("res://level/ui/city_restoration.gd").new()
 		add_child(restoration)
 		restoration.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -84,15 +83,14 @@ func _smoothed_energy(current: float, target: float, delta: float, speed: float)
 func _draw() -> void:
 	var view := size
 	draw_rect(Rect2(Vector2.ZERO, view), _base)
-	if _stage == 9:
+	if _stage == 2:
 		return
 	_draw_glow(view)
 	match _stage:
 		1: _draw_orbits(view)
-		2: _draw_grid(view)
-		3: _draw_slashes(view)
-		4: _draw_clock(view)
-		5: _draw_horizon(view)
+		3: _draw_grid(view)
+		4: _draw_slashes(view)
+		5: _draw_clock(view)
 		6: _draw_waves(view)
 		7: _draw_rain(view)
 		8: _draw_tunnel(view)
@@ -168,25 +166,6 @@ func _draw_clock(view: Vector2) -> void:
 	for hand in range(2):
 		var angle := _motion_time * (0.08 if hand == 0 else -0.16) - PI * 0.5
 		draw_line(center, center + Vector2.from_angle(angle) * radius * (0.55 if hand == 0 else 0.82), Color(_secondary, 0.22), 2.0, true)
-
-
-func _draw_horizon(view: Vector2) -> void:
-	var horizon := view.y * 0.62
-	var sun := Vector2(view.x * 0.72, horizon - view.y * 0.12)
-	var radius := view.y * (0.17 + _bass * 0.006)
-	draw_circle(sun, radius, Color(_primary, 0.14))
-	for stripe in range(7):
-		var offset := stripe * view.y * 0.025
-		var half_width := sqrt(maxf(radius * radius - offset * offset, 0.0))
-		var y := sun.y + offset
-		draw_line(Vector2(sun.x - half_width, y), Vector2(sun.x + half_width, y), Color(_base, 0.8), 4.0, true)
-	draw_rect(Rect2(0.0, horizon, view.x, view.y - horizon), Color(_base, 0.65))
-	for line in range(11):
-		var depth := fposmod(float(line) / 11.0 + _motion_time * 0.025, 1.0)
-		var y := horizon + depth * depth * (view.y - horizon)
-		draw_line(Vector2(0.0, y), Vector2(view.x, y), Color(_primary, depth * 0.17), 1.0)
-	for ray in range(-6, 7):
-		draw_line(Vector2(view.x * 0.5, horizon), Vector2(view.x * 0.5 + ray * view.x * 0.22, view.y), Color(_secondary, 0.09), 1.0, true)
 
 
 func _draw_waves(view: Vector2) -> void:

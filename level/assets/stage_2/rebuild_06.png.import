@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ceg3vow17i7ma"
-path="res://.godot/imported/ruins.jpg-e4dcf5ee243b65a677b669d293169dd1.ctex"
+uid="uid://bxjl6xuac05v7"
+path="res://.godot/imported/rebuild_06.png-404fcd241d2450eb3ffe01c75dccd248.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://level/assets/stage_9/ruins.jpg"
-dest_files=["res://.godot/imported/ruins.jpg-e4dcf5ee243b65a677b669d293169dd1.ctex"]
+source_file="res://level/assets/stage_2/rebuild_06.png"
+dest_files=["res://.godot/imported/rebuild_06.png-404fcd241d2450eb3ffe01c75dccd248.ctex"]
 
 [params]
 
