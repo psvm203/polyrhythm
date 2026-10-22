@@ -6,6 +6,7 @@ signal resume_requested
 signal restart_requested
 signal exit_requested
 signal timing_offset_changed(offset_sec: float)
+signal demo_mode_changed(enabled: bool)
 
 @onready var fullscreen_toggle: Button = %FullscreenToggle
 @onready var master_slider: HSlider = %MasterSlider
@@ -41,6 +42,7 @@ func _ready() -> void:
 	timing_calibration.offset_selected.connect(_apply_calibrated_offset)
 	timing_calibration.closed.connect(calibration_button.grab_focus)
 	fullscreen_toggle.toggled.connect(_set_fullscreen)
+	%DemoModeToggle.toggled.connect(_set_demo_mode)
 	resolution_option.item_selected.connect(SettingsStoreScript.save_resolution)
 	master_slider.value_changed.connect(_set_volume.bind("master_volume", master_value))
 	music_slider.value_changed.connect(_set_volume.bind("music_volume", music_value))
@@ -104,6 +106,13 @@ func _sync_settings() -> void:
 	_sync_toggle(sfx_enabled, settings["sfx_enabled"])
 	_sync_toggle(vibration_enabled, settings["controller_vibration_enabled"])
 	_sync_skip_seen_dialogue(settings["skip_seen_dialogue"])
+	_sync_toggle(%DemoModeToggle, settings["demo_mode"])
+
+
+func _set_demo_mode(enabled: bool) -> void:
+	_sync_toggle(%DemoModeToggle, enabled)
+	SettingsStoreScript.save_setting("demo_mode", enabled)
+	demo_mode_changed.emit(enabled)
 
 
 func _sync_slider(slider: HSlider, value_label: Label, percent: float) -> void:

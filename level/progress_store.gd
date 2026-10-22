@@ -7,7 +7,7 @@ const UNLOCKED_KEY := "highest_unlocked_stage"
 const PENDING_DIALOGUE_KEY := "pending_unlock_dialogue"
 const LAST_PLAYED_STAGE_KEY := "last_played_stage"
 const SEEN_DIALOGUE_SECTION := "seen_dialogue"
-const LAST_STAGE := 8
+const LAST_STAGE := 9
 const STAGE_ORDER_VERSION := 2
 const PREVIOUS_STAGE_ORDER := {1: 1, 9: 2, 2: 3, 3: 4, 4: 5, 6: 6, 7: 7, 8: 8}
 

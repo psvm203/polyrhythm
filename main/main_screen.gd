@@ -69,6 +69,7 @@ func _ready() -> void:
 	%SettingsButton.pressed.connect(_show_settings)
 	%SettingsBackButton.pressed.connect(_hide_settings)
 	%FullscreenToggle.toggled.connect(_set_fullscreen)
+	%DemoModeToggle.toggled.connect(_set_audio_enabled.bind("demo_mode", %DemoModeToggle))
 	%ResolutionOption.item_selected.connect(SettingsStoreScript.save_resolution)
 	%MasterSlider.value_changed.connect(_set_volume.bind("master_volume", %MasterValue))
 	%MusicSlider.value_changed.connect(_set_volume.bind("music_volume", %MusicValue))
@@ -161,6 +162,7 @@ func _refresh_stage_cards() -> void:
 
 func _configure_stage_focus(buttons: Array[BaseButton], active_count: int) -> void:
 	var count := clampi(active_count, 1, buttons.size())
+	var columns: int = $StageScreen/StageLayout/CardsSlot/Cards.columns
 	for index in buttons.size():
 		if index >= count:
 			continue
@@ -168,7 +170,6 @@ func _configure_stage_focus(buttons: Array[BaseButton], active_count: int) -> vo
 		var next_index := wrapi(index + 1, 0, count)
 		buttons[index].focus_neighbor_left = buttons[index].get_path_to(buttons[previous_index])
 		buttons[index].focus_neighbor_right = buttons[index].get_path_to(buttons[next_index])
-		var columns: int = $StageScreen/StageLayout/CardsSlot/Cards.columns
 		var vertical_index := index + columns if index < columns else index - columns
 		var vertical: Control = buttons[vertical_index] if vertical_index < count else %BackButton
 		buttons[index].focus_neighbor_top = buttons[index].get_path_to(vertical)
@@ -567,6 +568,7 @@ func _initialize_settings() -> void:
 	var settings := SettingsStoreScript.load_settings()
 	SettingsStoreScript.apply(settings)
 	%FullscreenToggle.set_pressed_no_signal(settings["fullscreen"])
+	_sync_audio_toggle(%DemoModeToggle, settings["demo_mode"])
 	_update_unlock_button()
 	_sync_audio_toggle(%ExperienceModeToggle, settings["experience_mode"])
 	%TimingSlider.set_value_no_signal(settings["timing_offset_ms"])
