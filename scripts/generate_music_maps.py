@@ -169,4 +169,8 @@ if __name__ == "__main__":
     if missing:
         parser.error("Original WAV files are required for regeneration; supply --source-dir. Missing: " + ", ".join(missing))
     reports = [generate(i, *track, source_dir=args.source_dir) for i, track in enumerate(TRACKS, 1)]
-    (ROOT / "docs/music_maps.json").write_text(json.dumps(reports, indent=2) + "\n")
+    report_path = ROOT / "docs/music_maps.json"
+    # Separately authored stages (Matadora) retain their own regeneration path.
+    if report_path.exists():
+        reports += [report for report in json.loads(report_path.read_text()) if report["stage"] > len(TRACKS)]
+    report_path.write_text(json.dumps(reports, indent=2) + "\n")

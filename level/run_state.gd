@@ -17,6 +17,7 @@ var accuracy_points: float = 0.0
 var judgments: Dictionary = {}
 var timing_samples_ms: Array[float] = []
 var early_inputs: int = 0
+var demo_mode: bool = false
 var _early_penalized: Dictionary = {}
 var _failed: bool = false
 
@@ -129,6 +130,6 @@ func snapshot() -> Dictionary:
 
 func _emit_change() -> void:
 	changed.emit(snapshot())
-	if gauge <= 0.0 and not _failed:
+	if gauge <= 0.0 and not _failed and not demo_mode:
 		_failed = true
 		failed.emit()

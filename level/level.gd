@@ -118,6 +118,7 @@ func _ready() -> void:
 		transition_duration,
 	)
 	var game_settings := SettingsStoreScript.load_settings()
+	_run_state.demo_mode = bool(game_settings["demo_mode"])
 	conductor.judgment_offset_sec = float(game_settings["timing_offset_ms"]) / 1000.0
 	_note_timeline = NoteTimelineScript.build(
 		_level_sequence,
@@ -147,6 +148,7 @@ func _ready() -> void:
 		pause_overlay.restart_requested.connect(_restart_level_from_pause)
 		pause_overlay.exit_requested.connect(_return_to_main_from_pause)
 		pause_overlay.timing_offset_changed.connect(_set_judgment_offset)
+		pause_overlay.demo_mode_changed.connect(func(enabled: bool) -> void: _run_state.demo_mode = enabled)
 		pause_overlay.set_exit_visible(true)
 	if dialogue_overlay != null:
 		dialogue_overlay.dialogue_finished.connect(_on_dialogue_finished)

@@ -16,6 +16,8 @@ func _run() -> void:
 	var trace_path := "/tmp/polyrhythm_gameplay_runtime_trace.json"
 	level.timing_trace_path = trace_path
 	get_root().add_child(level)
+	# Exercise normal failure even when the player has saved demo mode as On.
+	level._run_state.demo_mode = false
 	await process_frame
 	if level.countdown.countdown_finished.is_connected(level._on_countdown_finished):
 		level.countdown.countdown_finished.disconnect(level._on_countdown_finished)

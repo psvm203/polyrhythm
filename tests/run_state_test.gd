@@ -8,8 +8,9 @@ var _failures := 0
 func _init() -> void:
 	_test_successful_run()
 	_test_failed_run()
+	_test_demo_mode()
 	if _failures == 0:
-		print("Run state tests passed: 13 assertions")
+		print("Run state tests passed: 18 assertions")
 		quit(0)
 	else:
 		push_error("Run state tests failed: %d assertion(s)" % _failures)
@@ -48,6 +49,25 @@ func _test_failed_run() -> void:
 	var resolved_before := state.resolved_notes
 	state.apply_judgment("Perfect", 7)
 	_expect(state.resolved_notes == resolved_before, "failed run ignores later judgments")
+
+
+func _test_demo_mode() -> void:
+	var state := RunStateScript.new()
+	var failures := [0]
+	state.failed.connect(func() -> void: failures[0] += 1)
+	state.demo_mode = true
+	state.setup(30)
+	for index in 8:
+		state.apply_judgment("Too Slow", index)
+	_expect(failures[0] == 0 and state.gauge == 0.0, "demo mode suppresses failure at zero gauge")
+	_expect(state.resolved_notes == 8, "demo mode keeps resolving misses after zero gauge")
+	state.apply_judgment("Perfect", 8)
+	_expect(state.score == 1000 and state.gauge == 2.0, "demo mode keeps scoring and recovering health")
+	state.apply_judgment("Too Fast", 9)
+	_expect(failures[0] == 0 and state.gauge == 0.0, "early input cannot end demo mode")
+	state.demo_mode = false
+	state.apply_judgment("Too Slow", 9)
+	_expect(failures[0] == 1, "turning demo mode off restores failure on the next miss")
 
 
 func _expect(condition: bool, label: String) -> void:
