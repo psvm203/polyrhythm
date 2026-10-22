@@ -77,8 +77,7 @@ func _run() -> void:
 	var main = MainScene.instantiate()
 	root.add_child(main)
 	await process_frame
-	expect(main._stage_buttons().size() == 9, "all nine cards are present")
-	expect(main._stage_buttons()[8].disabled, "Matadora starts locked")
+	expect(main._stage_buttons().size() == 8, "only eight stage cards are exposed")
 	main.get_node("%UnlockAllStagesButton").pressed.emit()
 	expect(Progress.highest_unlocked_stage() == 9, "settings unlock persists all nine stages")
 	expect(Progress.stage_record(1)["score"] == 12345, "unlock preserves existing records")
@@ -89,10 +88,17 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 	var cards: GridContainer = main.get_node("StageScreen/StageLayout/CardsSlot/Cards")
-	var stage_nine: BaseButton = main._stage_buttons()[8]
-	expect(stage_nine.get_node(stage_nine.focus_neighbor_top) == main._stage_buttons()[3], "Matadora keyboard focus reaches the card above")
-	expect(main._stage_buttons()[3].get_node(main._stage_buttons()[3].focus_neighbor_bottom) == stage_nine, "keyboard focus reaches Matadora from the first row")
+	expect(not cards.get_node("StageNine").visible, "Matadora card stays hidden from the stage grid")
+	var secret_button: Button = main.get_node("%SecretStageButton")
+	expect(secret_button.focus_mode == Control.FOCUS_NONE, "secret stage button stays out of keyboard navigation")
+	expect(secret_button.size.x <= 24.0 and secret_button.size.y <= 24.0, "secret stage button is very small")
+	var stage_screen_rect: Rect2 = main.get_node("StageScreen").get_global_rect()
+	var secret_rect: Rect2 = secret_button.get_global_rect()
+	expect(stage_screen_rect.encloses(secret_rect), "secret stage button fits inside the stage screen")
+	expect(secret_rect.end.x > stage_screen_rect.end.x - 40.0 and secret_rect.end.y > stage_screen_rect.end.y - 40.0, "secret stage button sits in the bottom-right corner")
 	for card in cards.get_children():
+		if not card.visible:
+			continue
 		expect(main.get_global_rect().encloses(card.get_global_rect()), "stage card fits in viewport")
 		expect(card.get_global_rect().encloses(card.get_node("Items/Best").get_global_rect()), "record text fits inside card")
 	main.settings_screen.show()

@@ -293,6 +293,15 @@ shadow_color = Color(0, 0, 0, 0.22)
 shadow_size = 0
 shadow_offset = Vector2(0, 3)
 
+[sub_resource type="StyleBoxEmpty" id="SecretButtonNormal"]
+
+[sub_resource type="StyleBoxFlat" id="SecretButtonHover"]
+bg_color = Color(0.55, 0.72, 0.9, 0.2)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
 [node name="MainScreen" type="Control" unique_id=392035867]
 layout_mode = 3
 anchors_preset = 15
@@ -546,6 +555,31 @@ theme_override_styles/pressed = SubResource("StyleBackPressed")
 theme_override_styles/hover = SubResource("StyleBackHover")
 theme_override_styles/focus = SubResource("StyleBackHover")
 text = "←"
+
+[node name="SecretStageButton" type="Button" parent="StageScreen"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -26.0
+offset_top = -26.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 0
+grow_vertical = 0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(0.55, 0.72, 0.9, 0.45)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("SecretButtonNormal")
+theme_override_styles/pressed = SubResource("SecretButtonHover")
+theme_override_styles/hover = SubResource("SecretButtonHover")
+theme_override_styles/focus = SubResource("SecretButtonHover")
+flat = true
+text = "·"
 
 [node name="StageLayout" type="VBoxContainer" parent="StageScreen" unique_id=820009847]
 layout_mode = 1
@@ -1099,6 +1133,7 @@ theme_override_styles/focus = SubResource("StyleEmpty")
 flat = true
 
 [node name="StageNine" type="PanelContainer" parent="StageScreen/StageLayout/CardsSlot/Cards"]
+visible = false
 custom_minimum_size = Vector2(260, 300)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleStageLocked")

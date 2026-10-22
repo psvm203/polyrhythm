@@ -2,6 +2,7 @@ extends Control
 
 const LEVEL_SCENE := "res://level/level.tscn"
 const LEVEL_EDITOR_SCENE := "res://editor/level_editor.tscn"
+const SECRET_STAGE := 9
 const ProgressStoreScript = preload("res://level/progress_store.gd")
 const SettingsStoreScript = preload("res://main/settings_store.gd")
 const StageCatalogScript = preload("res://level/data/stage_catalog.gd")
@@ -58,12 +59,15 @@ func _ready() -> void:
 	_connect_ui_sfx(self)
 	%StartButton.pressed.connect(_show_stage_select)
 	%BackButton.pressed.connect(_hide_stage_select)
-	for stage_number in StageCatalogScript.stage_numbers():
-		var card: Control = $StageScreen/StageLayout/CardsSlot/Cards.get_child(stage_number - 1)
+	var stage_cards := _stage_cards()
+	for index in stage_cards.size():
+		var stage_number := index + 1
+		var card: Control = stage_cards[index]
 		var button: BaseButton = card.get_child(card.get_child_count() - 1)
 		button.pressed.connect(_start_game.bind(stage_number))
 		var data = LevelDataScript.from_yaml(StageCatalogScript.data_path(stage_number))
 		_setup_stage_card(button, card, card.get_node("Items/Record"), AudioStreamLoaderScript.load_stream(data.music_path))
+	%SecretStageButton.pressed.connect(_start_game.bind(SECRET_STAGE))
 	_refresh_stage_cards()
 	%EditorButton.pressed.connect(_open_level_editor)
 	%SettingsButton.pressed.connect(_show_settings)
@@ -123,7 +127,7 @@ func _input_manager() -> Node:
 
 func _refresh_stage_cards() -> void:
 	var highest := ProgressStoreScript.highest_unlocked_stage()
-	var cards := $StageScreen/StageLayout/CardsSlot/Cards.get_children()
+	var cards := _stage_cards()
 	var records: Array[Control] = []
 	for card in cards:
 		records.append(card.get_node("Items/Record"))
@@ -624,9 +628,17 @@ func _update_unlock_button() -> void:
 	%UnlockAllStagesButton.text = "해금 완료" if unlocked else "해금"
 
 
+func _stage_cards() -> Array[Control]:
+	var cards: Array[Control] = []
+	for child in $StageScreen/StageLayout/CardsSlot/Cards.get_children():
+		if child is Control and child.visible:
+			cards.append(child as Control)
+	return cards
+
+
 func _stage_buttons() -> Array[BaseButton]:
 	var buttons: Array[BaseButton] = []
-	for card in $StageScreen/StageLayout/CardsSlot/Cards.get_children():
+	for card in _stage_cards():
 		buttons.append(card.get_child(card.get_child_count() - 1))
 	return buttons
 
@@ -719,7 +731,7 @@ func _hide_overlay() -> void:
 func _show_stage_select() -> void:
 	_refresh_stage_cards()
 	var stage_buttons := _stage_buttons()
-	var selected_index := ProgressStoreScript.last_played_stage() - 1
+	var selected_index := clampi(ProgressStoreScript.last_played_stage() - 1, 0, stage_buttons.size() - 1)
 	_transition_to(stage_screen, $StageScreen/StageLayout/SmallLogo, %StageTitle, $StageScreen/StageLayout/CardsSlot/Cards, %BackButton, stage_buttons[selected_index])
 
 
